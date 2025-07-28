@@ -1,4 +1,9 @@
 import { Server } from "socket.io";
+import { createClient } from "redis";
+import { createAdapter } from "@socket.io/redis-adapter";
+
+const pubClient = createClient({ url: "redis://localhost:6379" });
+const subClient = pubClient.duplicate();
 
 class SocketService {
   private _io: Server;
@@ -11,16 +16,31 @@ class SocketService {
         origin: "http://localhost:3000",
       },
     });
+
+    // 💡 Connect clients and apply the adapter with a JSON parser
+    Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+      this._io.adapter(
+        createAdapter(pubClient, subClient, {
+          parser: {
+            encode: JSON.stringify,
+            decode: JSON.parse,
+          },
+        })
+      );
+    });
   }
+
   public initListeners() {
     const io = this._io;
     io.on("connect", (socket) => {
-      console.log("New socket connected", socket.id);
-      socket.on("event:message", async ({ message }: { message: string }) => {
-        console.log("New Message Received", message);
+      console.log(`New socket connected: ${socket.id}`);
+      socket.on("event:message", ({ message }: { message: string }) => {
+        io.emit("message-from-server", message);
       });
     });
   }
+
+
 
   get io() {
     return this._io;
