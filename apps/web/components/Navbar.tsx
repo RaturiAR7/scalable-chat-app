@@ -2,14 +2,14 @@ import React from "react";
 
 const Navbar = () => {
   return (
-    <nav className='w-full h-16 flex items-center px-5 justify-between'>
-      <div className='font-bold text-2xl'>Chat Global</div>
-      <div className='w-52 flex gap-3'>
-        <button className='bg-[#3B82F6] text-white rounded-lg p-2 px-3'>
+    <nav className='w-full h-16 bg-gray-800 shadow flex items-center justify-between px-6'>
+      <div className='text-2xl font-bold text-green-400'>Chat Global</div>
+      <div className='space-x-4'>
+        <button className='bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition'>
           Login
         </button>
-        <button className='bg-[#22C55E] text-white rounded-lg p-2 px-3'>
-          Guest House
+        <button className='bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition'>
+          Guest Access
         </button>
       </div>
     </nav>
