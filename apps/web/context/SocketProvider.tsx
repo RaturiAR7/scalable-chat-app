@@ -39,7 +39,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   useEffect(() => {
     const _socket = io("http://localhost:8000");
     _socket.on("message-from-server", onMessageRec);
-    _socket.to
+    
     setSocket(_socket);
 
     return () => {
