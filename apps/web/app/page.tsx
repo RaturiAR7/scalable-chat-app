@@ -1,6 +1,5 @@
 "use client";
 import { useSocket } from "../context/SocketProvider";
-import classes from "./page.module.css";
 import React, { useState } from "react";
 
 export default function Page() {
@@ -8,7 +7,7 @@ export default function Page() {
   console.log(messages);
   const [message, setMessage] = useState("");
   return (
-    <div>
+    <div className='bg-black'>
       <div>
         <h1 style={{ color: "white", fontSize: "bold" }}>
           All Messages Will Appear Here
@@ -24,7 +23,6 @@ export default function Page() {
         <input
           onChange={(e) => setMessage(e.target.value)}
           value={message}
-          className={classes["chat-input"]}
           type='text'
           placeholder='Message'
         />
