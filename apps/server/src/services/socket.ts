@@ -32,12 +32,15 @@ class SocketService {
 
   public initListeners() {
     const io = this._io;
+    ////Global Connect
     io.on("connect", (socket) => {
       console.log(`New socket connected: ${socket.id}`);
       socket.on("event:message", ({ message }: { message: string }) => {
         io.emit("message-from-server", message);
       });
     });
+
+    ////Room Connect
   }
 
 

@@ -2,13 +2,23 @@
 import { useSocket } from "../context/SocketProvider";
 import classes from "./page.module.css";
 import React, { useState } from "react";
+
 export default function Page() {
-  const { sendMessage } = useSocket();
+  const { sendMessage, messages } = useSocket();
+  console.log(messages);
   const [message, setMessage] = useState("");
   return (
     <div>
       <div>
-        <h1>All Messages Will Appear Here</h1>
+        <h1 style={{ color: "white", fontSize: "bold" }}>
+          All Messages Will Appear Here
+        </h1>
+        <div>
+          {message.length > 0 &&
+            messages.map((message: string, index: number) => (
+              <h1 key={index}>{message}</h1>
+            ))}
+        </div>
       </div>
       <div>
         <input
