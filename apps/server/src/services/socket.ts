@@ -47,9 +47,20 @@ class SocketService {
       ///Message in particular room only
       socket.on(
         "event:room-message",
-        ({ roomId, message }: { roomId: string; message: string }) => {
+        async ({ roomId, message }: { roomId: string; message: string }) => {
+          const rooms = socket.rooms; // Set of rooms this socket is part of
+
+          // socket.rooms always includes the socket ID itself
+          if (!rooms.has(roomId)) {
+            console.log(
+              `Socket ${socket.id} attempted to message room ${roomId} without joining`
+            );
+            socket.emit("error", `You are not part of room ${roomId}`);
+            return;
+          }
+
           console.log(roomId, " ", message);
-          socket.to(roomId).emit(message);
+          socket.to(roomId).emit("message-from-server-group", message);
           socket.emit("message-from-server-group", message);
         }
       );
@@ -58,7 +69,16 @@ class SocketService {
         socket.leave(roomId);
         console.log(`Socket ${socket.id} left room ${roomId}`);
       });
+      /////Random Room-hardcoding the value of random room right now
+      const randomRoom = "123";
+      socket
+        .on("join-room-random", () => {
+          console.log(socket, "Join Room 123");
+        })
+        .join(randomRoom);
     });
+
+    io.to("");
   }
 
   get io() {
