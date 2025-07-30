@@ -1,12 +1,15 @@
 "use client";
 import React, { useState, useContext } from "react";
 import { SocketContext } from "../context/SocketProvider";
+import { useRouter } from "next/navigation";
 export default function ConnectToRoom() {
   const [roomId, setRoomId] = useState<string>();
 
+  const router = useRouter();
+
   const { connectMessage } = useContext(SocketContext)!;
   return (
-    <div>
+    <div className=' flex flex-col gap-5'>
       <div className='flex gap-2'>
         <input
           type='text'
@@ -21,6 +24,7 @@ export default function ConnectToRoom() {
           className='bg-green-700 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600 transition'
           onClick={() => {
             if (roomId) connectMessage("join-room", { roomId: roomId });
+            router.push(`/connect/${roomId}`);
           }}
         >
           Create New Room
@@ -30,6 +34,7 @@ export default function ConnectToRoom() {
         className='bg-green-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600 transition'
         onClick={() => {
           connectMessage("join-room-random");
+          router.push(`/connect/${roomId}`);
         }}
       >
         Create A Random Room
