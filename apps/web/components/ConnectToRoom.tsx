@@ -26,7 +26,12 @@ export default function ConnectToRoom() {
           Create New Room
         </button>
       </div>
-      <button className='bg-green-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600 transition'>
+      <button
+        className='bg-green-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600 transition'
+        onClick={() => {
+          connectMessage("join-room-random");
+        }}
+      >
         Create A Random Room
       </button>
     </div>

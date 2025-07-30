@@ -73,7 +73,7 @@ class SocketService {
       const randomRoom = "123";
       socket
         .on("join-room-random", () => {
-          console.log(socket, "Join Room 123");
+          console.log(socket.id, "Join Room 123");
         })
         .join(randomRoom);
     });

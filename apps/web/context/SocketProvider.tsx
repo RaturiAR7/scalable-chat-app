@@ -8,7 +8,7 @@ interface SocketProviderProps {
 
 interface ISocketContext {
   sendMessage: (msg: string) => any;
-  connectMessage: (type: string, msg: string) => any;
+  connectMessage: (type: string, roomId?: string) => any;
   messages: string[];
 }
 
@@ -34,10 +34,10 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     [socket]
   );
   const connectMessage: ISocketContext["connectMessage"] = useCallback(
-    (type, msg) => {
-      console.log("Sending message:", msg, "with type", type);
+    (type, roomId) => {
+      console.log("Sending messagewith type", type);
       if (socket) {
-        socket.emit(type, msg);
+        socket.emit(type, roomId);
       }
     },
     [socket]
