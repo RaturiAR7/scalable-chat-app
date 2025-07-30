@@ -1,8 +1,10 @@
+import ConnectToRoom from "../components/ConnectToRoom";
+
 export default function Page() {
   return (
     <div className='min-h-screen flex flex-col bg-gray-900 text-white'>
       {/* Hero Section */}
-      <div className='flex flex-col items-center justify-center flex-1 text-center px-4'>
+      <div className='flex flex-col gap-3 items-center justify-center flex-1 text-center px-4'>
         <h1 className='text-4xl md:text-5xl font-bold mb-4 text-white'>
           Connect with the World Instantly
         </h1>
@@ -10,9 +12,7 @@ export default function Page() {
           Join global chat rooms or private spaces — real-time, fast, and
           secure. Experience the future of communication.
         </p>
-        <button className='bg-green-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600 transition'>
-          Create New Room
-        </button>
+        <ConnectToRoom />
       </div>
 
       {/* Footer */}

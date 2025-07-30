@@ -8,10 +8,11 @@ interface SocketProviderProps {
 
 interface ISocketContext {
   sendMessage: (msg: string) => any;
+  connectMessage: (type: string, msg: string) => any;
   messages: string[];
 }
 
-const SocketContext = React.createContext<ISocketContext | null>(null);
+export const SocketContext = React.createContext<ISocketContext | null>(null);
 
 ////Custom Hook
 export const useSocket = () => {
@@ -32,6 +33,15 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     },
     [socket]
   );
+  const connectMessage: ISocketContext["connectMessage"] = useCallback(
+    (type, msg) => {
+      console.log("Sending message:", msg, "with type", type);
+      if (socket) {
+        socket.emit(type, msg);
+      }
+    },
+    [socket]
+  );
   const onMessageRec = useCallback((msg: string) => {
     setMessages((prevMessages) => [...prevMessages, msg]);
   }, []);
@@ -39,7 +49,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   useEffect(() => {
     const _socket = io("http://localhost:8000");
     _socket.on("message-from-server", onMessageRec);
-    
+
     setSocket(_socket);
 
     return () => {
@@ -50,7 +60,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ sendMessage, messages }}>
+    <SocketContext.Provider value={{ sendMessage, connectMessage, messages }}>
       {children}
     </SocketContext.Provider>
   );
