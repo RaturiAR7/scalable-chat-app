@@ -40,6 +40,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
           /////Global Messages
           socket.emit("event:message", { message: msg });
         }
+        setMessages((prevMessages) => [...prevMessages, msg]);
       }
     },
     [socket]

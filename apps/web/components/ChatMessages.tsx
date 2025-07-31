@@ -4,7 +4,7 @@ import { SocketContext } from "../context/SocketProvider";
 import { useParams } from "next/navigation";
 
 const ChatMessages = () => {
-  const { messages, sendMessage, leaveRoom, connect } =
+  const { messages, sendMessage, leaveRoom, connect, } =
     useContext(SocketContext);
   const { roomId } = useParams();
   const [text, setText] = useState<string>("");
@@ -44,6 +44,7 @@ const ChatMessages = () => {
           className='bg-green-600 px-4 py-2 rounded-md hover:bg-green-700'
           onClick={() => {
             sendMessage(text, roomId);
+            
           }}
         >
           Send

@@ -60,7 +60,6 @@ class SocketService {
 
           console.log(roomId, " ", message);
           socket.to(roomId).emit("message-from-server", message);
-          // socket.emit("message-from-server", message);
         }
       );
       ////Leave room
