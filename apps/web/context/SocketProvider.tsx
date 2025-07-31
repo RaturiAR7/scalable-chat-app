@@ -1,7 +1,6 @@
 "use client";
-import React, { useCallback, useEffect, useContext } from "react";
+import React, { useCallback, useEffect } from "react";
 import { io, Socket } from "socket.io-client";
-import { useRouter } from "next/navigation";
 
 interface SocketProviderProps {
   children?: React.ReactNode;
@@ -16,16 +15,8 @@ interface ISocketContext {
 
 export const SocketContext = React.createContext<ISocketContext | null>(null);
 
-////Custom Hook
-export const useSocket = () => {
-  const state = useContext(SocketContext);
-  if (!state) throw new Error(`state is undefined`);
-  return state;
-};
-let router;
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = React.useState<Socket>();
-  router = useRouter();
   const [messages, setMessages] = React.useState<string[]>([]);
 
   const connect: ISocketContext["connect"] = useCallback(
@@ -33,7 +24,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       console.log("Sending message with type", type, roomId);
       if (socket && roomId) {
         socket.emit(type, { roomId: roomId });
-        router.push(`/connect/${roomId}`);
       }
     },
     [socket]
@@ -58,7 +48,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const leaveRoom: ISocketContext["leaveRoom"] = (roomId: string) => {
     if (socket) {
       socket.emit("leave-room", { roomId: roomId });
-      router.push(`/`);
     }
   };
   const onMessageRec = useCallback((msg: string) => {

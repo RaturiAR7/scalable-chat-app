@@ -4,13 +4,17 @@ import { SocketContext } from "../context/SocketProvider";
 import { useParams } from "next/navigation";
 
 const ChatMessages = () => {
-  const { messages, sendMessage, leaveRoom }: string[] | null =
+  const { messages, sendMessage, leaveRoom, connect } =
     useContext(SocketContext);
-  const params = useParams();
+  const { roomId } = useParams();
   const [text, setText] = useState<string>("");
   useEffect(() => {
-    return () => {};
-  }, []);
+    if (roomId) connect("join-room", roomId);
+
+    return () => {
+      leaveRoom(roomId);
+    };
+  }, [roomId]);
   return (
     <>
       <div className='flex-1 relative justify-between p-4 overflow-y-auto space-y-3'>
@@ -39,18 +43,10 @@ const ChatMessages = () => {
         <button
           className='bg-green-600 px-4 py-2 rounded-md hover:bg-green-700'
           onClick={() => {
-            sendMessage( text, params.roomId);
+            sendMessage(text, roomId);
           }}
         >
           Send
-        </button>
-        <button
-          className='bg-red-600 px-4 py-2 rounded-md hover:bg-green-700'
-          onClick={() => {
-            leaveRoom(params.roomId);
-          }}
-        >
-          Leave Room
         </button>
       </div>
     </>
