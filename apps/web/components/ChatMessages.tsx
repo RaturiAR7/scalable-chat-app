@@ -1,11 +1,16 @@
 "use client";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../context/SocketProvider";
 
 const ChatMessages = () => {
   const { messages, sendMessage }: string[] | null = useContext(SocketContext);
   const [text, setText] = useState<string>("");
-  console.log("Chat Messages", messages);
+  useEffect(()=>{
+
+    return ()=>{
+      
+    }
+  },[])
   return (
     <>
       <div className='flex-1 relative justify-between p-4 overflow-y-auto space-y-3'>
@@ -22,13 +27,13 @@ const ChatMessages = () => {
           </div>
         ))}
       </div>
-      <div className='p-4 border-t w-full border-gray-700 flex gap-2 fixed bottom-0 bg-gray-800'>
+      <div className='p-4 border-t w-full border-gray-700 flex gap-2 fixed bottom-0 bg-gray-800 '>
         <input
           onChange={(e) => {
             setText(e.target.value);
           }}
           type='text'
-          className='flex-1 px-4 py-2 rounded-md text-black'
+          className='flex-1 px-4 py-2 rounded-md'
           placeholder='Type your message...'
         />
         <button
