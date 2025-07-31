@@ -10,6 +10,7 @@ interface SocketProviderProps {
 interface ISocketContext {
   sendMessage: (msg: string) => any;
   connect: (type: string, roomId?: string) => any;
+  leaveRoom: (roomId: string) => any;
   messages: string[];
 }
 
@@ -45,6 +46,13 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     },
     [socket]
   );
+
+  const leaveRoom: ISocketContext["leaveRoom"] = (roomId: string) => {
+    if (socket) {
+      socket.emit("leave-room", { roomId: roomId });
+      router.push(`/`);
+    }
+  };
   const onMessageRec = useCallback((msg: string) => {
     setMessages((prevMessages) => [...prevMessages, msg]);
   }, []);
@@ -71,7 +79,9 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ sendMessage, connect, messages }}>
+    <SocketContext.Provider
+      value={{ sendMessage, connect, messages, leaveRoom }}
+    >
       {children}
     </SocketContext.Provider>
   );
