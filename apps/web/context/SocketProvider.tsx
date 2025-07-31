@@ -5,19 +5,27 @@ import { io, Socket } from "socket.io-client";
 interface SocketProviderProps {
   children?: React.ReactNode;
 }
-
+interface message {
+  msg: string;
+  roomId: string;
+}
 interface ISocketContext {
   sendMessage: (msg: string, roomId?: string) => any;
   connect: (type: string, roomId?: string) => any;
   leaveRoom: (roomId: string) => any;
-  messages: string[];
+  messages: message[];
 }
 
 export const SocketContext = React.createContext<ISocketContext | null>(null);
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = React.useState<Socket>();
-  const [messages, setMessages] = React.useState<string[]>([]);
+  const [messages, setMessages] = React.useState<
+    {
+      msg: string;
+      roomId: string;
+    }[]
+  >([]);
 
   const connect: ISocketContext["connect"] = useCallback(
     (type, roomId) => {
@@ -40,7 +48,10 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
           /////Global Messages
           socket.emit("event:message", { message: msg });
         }
-        setMessages((prevMessages) => [...prevMessages, msg]);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { msg, socketId: "me" },
+        ]);
       }
     },
     [socket]
@@ -51,8 +62,11 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       socket.emit("leave-room", { roomId: roomId });
     }
   };
-  const onMessageRec = useCallback((msg: string) => {
-    setMessages((prevMessages) => [...prevMessages, msg]);
+  const onMessageRec = useCallback((msg: string, socketId: string) => {
+    setMessages((prevMessages: { msg: string; socketId: string }) => [
+      ...prevMessages,
+      { msg, socketId },
+    ]);
   }, []);
   const onDisconnect = useCallback(() => {
     console.log("Disconnected from server");

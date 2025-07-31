@@ -36,7 +36,7 @@ class SocketService {
     io.on("connect", (socket) => {
       console.log(socket.id, "Connected");
       socket.on("event:message", ({ message }: { message: string }) => {
-        socket.broadcast.emit("message-from-server", message);
+        socket.broadcast.emit("message-from-server", message,socket.id);
       });
       ////After global connect - Connect to a particular room
       socket.on("join-room", ({ roomId }: { roomId: string }) => {
@@ -59,7 +59,7 @@ class SocketService {
           }
 
           console.log(roomId, " ", message);
-          socket.to(roomId).emit("message-from-server", message);
+          socket.to(roomId).emit("message-from-server", message,socket.id);
         }
       );
       ////Leave room
