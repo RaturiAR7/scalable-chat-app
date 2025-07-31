@@ -39,7 +39,7 @@ const ChatMessages = () => {
         <button
           className='bg-green-600 px-4 py-2 rounded-md hover:bg-green-700'
           onClick={() => {
-            sendMessage(text);
+            sendMessage( text, params.roomId);
           }}
         >
           Send

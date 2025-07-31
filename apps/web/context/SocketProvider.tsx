@@ -8,7 +8,7 @@ interface SocketProviderProps {
 }
 
 interface ISocketContext {
-  sendMessage: (msg: string) => any;
+  sendMessage: (msg: string, roomId?: string) => any;
   connect: (type: string, roomId?: string) => any;
   leaveRoom: (roomId: string) => any;
   messages: string[];
@@ -27,21 +27,29 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = React.useState<Socket>();
   router = useRouter();
   const [messages, setMessages] = React.useState<string[]>([]);
-  const sendMessage: ISocketContext["sendMessage"] = useCallback(
-    (msg) => {
-      console.log("Sending message:", msg);
-      if (socket && msg) {
-        socket.emit("event:message", { message: msg });
+
+  const connect: ISocketContext["connect"] = useCallback(
+    (type, roomId) => {
+      console.log("Sending message with type", type, roomId);
+      if (socket && roomId) {
+        socket.emit(type, { roomId: roomId });
+        router.push(`/connect/${roomId}`);
       }
     },
     [socket]
   );
-  const connect: ISocketContext["connect"] = useCallback(
-    (type, roomId) => {
-      console.log("Sending messagewith type", type, roomId);
-      if (socket && roomId) {
-        socket.emit(type, { roomId: roomId });
-        router.push(`/connect/${roomId}`);
+
+  const sendMessage: ISocketContext["sendMessage"] = useCallback(
+    (msg, roomId) => {
+      console.log("Sending message:", msg);
+      if (socket && msg) {
+        if (roomId !== "globally") {
+          /////Room Based Message
+          socket.emit("event:room-message", { message: msg, roomId: roomId });
+        } else {
+          /////Global Messages
+          socket.emit("event:message", { message: msg });
+        }
       }
     },
     [socket]

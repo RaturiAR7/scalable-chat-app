@@ -47,9 +47,9 @@ class SocketService {
       ///Message in particular room only
       socket.on(
         "event:room-message",
-        async ({ roomId, message }: { roomId: string; message: string }) => {
+        ({ roomId, message }: { roomId: string; message: string }) => {
           const rooms = socket.rooms; // Set of rooms this socket is part of
-
+          console.log("Room Message");
           // socket.rooms always includes the socket ID itself
           if (!rooms.has(roomId)) {
             console.log(
@@ -60,8 +60,8 @@ class SocketService {
           }
 
           console.log(roomId, " ", message);
-          socket.to(roomId).emit("message-from-server-group", message);
-          socket.emit("message-from-server-group", message);
+          socket.to(roomId).emit("message-from-server", message);
+          // socket.emit("message-from-server", message);
         }
       );
       ////Leave room
