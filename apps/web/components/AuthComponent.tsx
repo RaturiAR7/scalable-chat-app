@@ -1,16 +1,17 @@
 "use client";
 import Image from "next/image";
 import { login, logout } from "../app/lib/actions/auth";
+import type { Session } from "@auth/core/types";
 
-const AuthComponent = ({ session }) => {
+const AuthComponent = ({ session }: { session: Session | null }) => {
   return (
     <div className='text-white '>
       {session ? (
         <div className='flex gap-4 w-full items-center'>
-          <p>{session.user.name}</p>
+          <p>{session?.user?.name}</p>
           <Image
             className='rounded-full'
-            src={session?.user?.image}
+            src={session?.user?.image || ""}
             width={35}
             height={20}
             alt='image'
