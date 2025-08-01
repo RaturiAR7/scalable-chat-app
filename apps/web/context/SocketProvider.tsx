@@ -30,13 +30,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const sendMessage: ISocketContext["sendMessage"] = useCallback(
     (msg, roomId) => {
       if (socket && msg) {
-        if (roomId !== "globally") {
-          /////Room Based Message
-          socket.emit("event:room-message", { message: msg, roomId: roomId });
-        } else {
-          /////Global Messages
-          socket.emit("event:message", { message: msg });
-        }
+        socket.emit("event:room-message", { message: msg, roomId: roomId });
         setMessages((prevMessages) => [
           ...prevMessages,
           { msg, username: "me" },

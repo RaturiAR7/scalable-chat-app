@@ -32,7 +32,7 @@ export default function ConnectToRoom() {
       <button
         className='bg-green-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600 transition'
         onClick={() => {
-          router.push(`/connect/globally`);
+          router.push(`/connect/global`);
         }}
       >
         Chat Globally
