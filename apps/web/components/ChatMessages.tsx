@@ -12,24 +12,23 @@ const ChatMessages = () => {
   const session = useSession();
 
   useEffect(() => {
-    if (roomId && session) {
-      connect("join-room", roomId, session.data?.user?.name);
+    if (roomId) {
+      connect("join-room", roomId, session.data?.user?.name || "Guest");
     }
 
     return () => {
       leaveRoom(roomId);
     };
   }, [roomId]);
-  console.log(messages);
   return (
     <>
       <div className='flex-1 relative justify-between p-4 overflow-y-auto space-y-3'>
         {messages?.map(
-          (message: { msg: string; socketId: string }, index: number) => (
+          (message: { msg: string; username: string }, index: number) => (
             <div
               key={index}
               className={`max-w-xs w-auto flex px-4 py-2 rounded-2xl ${
-                message.socketId == "me"
+                message.username == "me"
                   ? "bg-green-600 ml-auto text-right"
                   : "bg-gray-700 mr-auto"
               }`}

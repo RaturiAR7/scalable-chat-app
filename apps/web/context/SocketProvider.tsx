@@ -27,32 +27,8 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     }[]
   >([]);
 
-  const connect: ISocketContext["connect"] = useCallback(
-    (type, roomId, username) => {
-      /////ToDo: Make user to login first and then connect
-      console.log("Sending message with type", type, roomId);
-      const _socket = io("http://localhost:8000", {
-        reconnection: true,
-        reconnectionAttempts: 5,
-        reconnectionDelay: 1000,
-        query: {
-          username,
-        },
-      });
-      _socket.on("message-from-server", onMessageRec);
-      _socket.on("disconnect", onDisconnect);
-
-      setSocket(_socket);
-      if (socket && roomId) {
-        socket.emit(type, { roomId: roomId });
-      }
-    },
-    [socket]
-  );
-
   const sendMessage: ISocketContext["sendMessage"] = useCallback(
     (msg, roomId) => {
-      console.log("Sending message:", msg);
       if (socket && msg) {
         if (roomId !== "globally") {
           /////Room Based Message
@@ -63,7 +39,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         }
         setMessages((prevMessages) => [
           ...prevMessages,
-          { msg, socketId: "me" },
+          { msg, username: "me" },
         ]);
       }
     },
@@ -75,20 +51,45 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       socket.emit("leave-room", { roomId: roomId });
     }
   };
-  const onMessageRec = useCallback((msg: string, socketId: string) => {
-    setMessages((prevMessages: { msg: string; socketId: string }) => [
+  const onMessageRec = useCallback((msg: string, username: string) => {
+    setMessages((prevMessages: { msg: string; username: string }) => [
       ...prevMessages,
-      { msg, socketId },
+      { msg, username },
     ]);
   }, []);
   const onDisconnect = useCallback(() => {
     console.log("Disconnected from server");
   }, []);
 
+  const connect: ISocketContext["connect"] = useCallback(
+    (type, roomId, username) => {
+      if (socket) {
+        socket.disconnect(); // disconnect the previous socket
+      }
+
+      const _socket = io("http://localhost:8000", {
+        reconnection: !socket ? true : false,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 2000,
+        query: { username },
+      });
+
+      _socket.on("message-from-server", onMessageRec);
+      _socket.on("disconnect", onDisconnect);
+
+      if (roomId) {
+        _socket.emit(type, { roomId });
+      }
+
+      setSocket(_socket); // this will be available on next render
+    },
+    [onMessageRec, onDisconnect, socket]
+  );
+
   useEffect(() => {
     return () => {
       socket?.disconnect();
-      socket?.off("message", onMessageRec);
+      socket?.off("message-from-server", onMessageRec); // Corrected event name
       setSocket(undefined);
     };
   }, []);
