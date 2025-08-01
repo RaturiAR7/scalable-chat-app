@@ -1,5 +1,4 @@
 import React from "react";
-import AuthenticationButtons from "./AuthComponent";
 import { auth } from "../auth";
 import AuthComponent from "./AuthComponent";
 import type { Session } from "@auth/core/types";

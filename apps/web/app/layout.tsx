@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { SocketProvider } from "../context/SocketProvider";
 import Navbar from "../components/Navbar";
+import { SessionProvider } from "next-auth/react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,12 +26,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <SocketProvider>
-        <body className={`${geistSans.variable} ${geistMono.variable}`}>
-          <Navbar />
-          {children}
-        </body>
-      </SocketProvider>
+      <SessionProvider>
+        <SocketProvider>
+          <body className={`${geistSans.variable} ${geistMono.variable}`}>
+            <Navbar />
+            {children}
+          </body>
+        </SocketProvider>
+      </SessionProvider>
     </html>
   );
 }

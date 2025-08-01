@@ -1,6 +1,8 @@
+import { auth } from "../auth";
 import ConnectToRoom from "../components/ConnectToRoom";
 
-export default function Page() {
+export default async function Page() {
+  const session = await auth();
   return (
     <div className='min-h-screen flex flex-col bg-gray-900 text-white'>
       {/* Hero Section */}

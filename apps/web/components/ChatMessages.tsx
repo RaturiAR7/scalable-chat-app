@@ -2,14 +2,19 @@
 import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../context/SocketProvider";
 import { useParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const ChatMessages = () => {
   const { messages, sendMessage, leaveRoom, connect } =
     useContext(SocketContext);
   const { roomId } = useParams();
   const [text, setText] = useState<string>("");
+  const session = useSession();
+
   useEffect(() => {
-    if (roomId) connect("join-room", roomId);
+    if (roomId && session) {
+      connect("join-room", roomId, session.data?.user?.name);
+    }
 
     return () => {
       leaveRoom(roomId);

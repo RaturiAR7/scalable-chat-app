@@ -11,7 +11,7 @@ interface message {
 }
 interface ISocketContext {
   sendMessage: (msg: string, roomId?: string) => any;
-  connect: (type: string, roomId?: string) => any;
+  connect: (type: string, roomId?: string, username: string) => any;
   leaveRoom: (roomId: string) => any;
   messages: message[];
 }
@@ -28,8 +28,21 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   >([]);
 
   const connect: ISocketContext["connect"] = useCallback(
-    (type, roomId) => {
+    (type, roomId, username) => {
+      /////ToDo: Make user to login first and then connect
       console.log("Sending message with type", type, roomId);
+      const _socket = io("http://localhost:8000", {
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+        query: {
+          username,
+        },
+      });
+      _socket.on("message-from-server", onMessageRec);
+      _socket.on("disconnect", onDisconnect);
+
+      setSocket(_socket);
       if (socket && roomId) {
         socket.emit(type, { roomId: roomId });
       }
@@ -73,19 +86,9 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    const _socket = io("http://localhost:8000", {
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
-    });
-    _socket.on("message-from-server", onMessageRec);
-    _socket.on("disconnect", onDisconnect);
-
-    setSocket(_socket);
-
     return () => {
-      _socket.disconnect();
-      _socket.off("message", onMessageRec);
+      socket?.disconnect();
+      socket?.off("message", onMessageRec);
       setSocket(undefined);
     };
   }, []);
