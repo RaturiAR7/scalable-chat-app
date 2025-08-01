@@ -1,12 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 
 export default function ConnectToRoom() {
   const [roomId, setRoomId] = useState<string>("");
   const router = useRouter();
-  const session = useSession();
 
   return (
     <div className=' flex flex-col gap-5'>

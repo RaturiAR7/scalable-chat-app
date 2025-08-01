@@ -9,7 +9,6 @@ const Navbar = async () => {
   return (
     <nav className='w-full h-16 bg-gray-800 shadow flex items-center justify-between px-6'>
       <div className='text-2xl font-bold text-green-400'>Chat Global</div>
-      
       <AuthComponent session={session} />
     </nav>
   );

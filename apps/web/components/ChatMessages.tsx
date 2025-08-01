@@ -22,18 +22,19 @@ const ChatMessages = () => {
   }, [roomId]);
   return (
     <>
-      <div className='flex-1 relative justify-between p-4 overflow-y-auto space-y-3'>
+      <div className='flex-col relative justify-between p-4 overflow-y-auto space-y-3'>
         {messages?.map(
           (message: { msg: string; username: string }, index: number) => (
             <div
               key={index}
-              className={`max-w-xs w-auto flex px-4 py-2 rounded-2xl ${
+              className={`max-w-1/3  flex-wrap flex flex-col px-4 py-1 rounded-2xl ${
                 message.username == "me"
                   ? "bg-green-600 ml-auto text-right"
                   : "bg-gray-700 mr-auto"
               }`}
             >
-              {message.msg}
+              <p className='text-blue-600 text-xs'>{message.username}</p>
+              <p className='text-wrap'>{message.msg}</p>
             </div>
           )
         )}
