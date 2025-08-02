@@ -57,13 +57,19 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       if (socket) {
         socket.disconnect(); // disconnect the previous socket
       }
-
-      const _socket = io("http://localhost:8000", {
-        reconnection: !socket ? true : false,
-        reconnectionAttempts: 5,
-        reconnectionDelay: 2000,
-        query: { username },
-      });
+      console.log(
+        "Connecting to socket server...",
+        process.env.NEXT_PUBLIC_BACKEND_URL
+      );
+      const _socket = io(
+        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000",
+        {
+          reconnection: !socket ? true : false,
+          reconnectionAttempts: 5,
+          reconnectionDelay: 2000,
+          query: { username },
+        }
+      );
 
       _socket.on("message-from-server", onMessageRec);
       _socket.on("disconnect", onDisconnect);

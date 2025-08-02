@@ -2,7 +2,12 @@ import { Server } from "socket.io";
 import { createClient } from "redis";
 import { createAdapter } from "@socket.io/redis-adapter";
 
-const pubClient = createClient({ url: "redis://localhost:6379" });
+require("dotenv").config();
+
+console.log(process.env.REDIS_URL);
+const pubClient = createClient({
+  url: process.env.REDIS_URL || "redis://localhost:6379",
+});
 const subClient = pubClient.duplicate();
 
 class SocketService {
@@ -13,7 +18,10 @@ class SocketService {
     this._io = new Server({
       cors: {
         allowedHeaders: ["*"],
-        origin: "http://localhost:3000",
+        origin: [
+          "https://scalable-chat-app-web-gilt.vercel.app",
+          "http://localhost:3000",
+        ],
       },
     });
 
