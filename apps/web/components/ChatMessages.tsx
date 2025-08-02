@@ -5,19 +5,30 @@ import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 const ChatMessages = () => {
-  const { messages, sendMessage, leaveRoom, connect } =
-    useContext(SocketContext);
+  const socketContext = useContext(SocketContext);
+  const messages = socketContext?.messages;
+  const sendMessage = socketContext?.sendMessage;
+  const leaveRoom = socketContext?.leaveRoom;
+  const connect = socketContext?.connect;
   const { roomId } = useParams();
   const [text, setText] = useState<string>("");
   const session = useSession();
 
   useEffect(() => {
     if (roomId) {
-      connect("join-room", roomId, session.data?.user?.name || "Guest");
+      if (connect && roomId != undefined) {
+        connect(
+          "join-room",
+          Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""),
+          session.data?.user?.name || "Guest"
+        );
+      }
     }
 
     return () => {
-      leaveRoom(roomId);
+      if (leaveRoom && roomId) {
+        leaveRoom(Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""));
+      }
     };
   }, [roomId]);
   return (
@@ -44,6 +55,7 @@ const ChatMessages = () => {
           onChange={(e) => {
             setText(e.target.value);
           }}
+          value={text}
           type='text'
           className='flex-1 px-4 py-2 rounded-md'
           placeholder='Type your message...'
@@ -51,7 +63,13 @@ const ChatMessages = () => {
         <button
           className='bg-green-600 px-4 py-2 rounded-md hover:bg-green-700'
           onClick={() => {
-            sendMessage(text, roomId);
+            if (sendMessage) {
+              const normalizedRoomId = Array.isArray(roomId)
+                ? (roomId[0] ?? "")
+                : (roomId ?? "");
+              sendMessage(text, normalizedRoomId);
+              setText("");
+            }
           }}
         >
           Send

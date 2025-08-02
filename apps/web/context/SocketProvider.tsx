@@ -7,12 +7,12 @@ interface SocketProviderProps {
 }
 interface message {
   msg: string;
-  roomId: string;
+  username: string;
 }
 interface ISocketContext {
-  sendMessage: (msg: string, roomId?: string) => any;
-  connect: (type: string, roomId?: string, username: string) => any;
-  leaveRoom: (roomId: string) => any;
+  sendMessage: (msg: string, roomId?: string) => void;
+  connect: (type: string, roomId: string, username: string) => void;
+  leaveRoom: (roomId: string) => void;
   messages: message[];
 }
 
@@ -23,7 +23,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [messages, setMessages] = React.useState<
     {
       msg: string;
-      roomId: string;
+      username: string;
     }[]
   >([]);
 
@@ -46,10 +46,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     }
   };
   const onMessageRec = useCallback((msg: string, username: string) => {
-    setMessages((prevMessages: { msg: string; username: string }) => [
-      ...prevMessages,
-      { msg, username },
-    ]);
+    setMessages((prevMessages) => [...prevMessages, { msg, username }]);
   }, []);
   const onDisconnect = useCallback(() => {
     console.log("Disconnected from server");
