@@ -15,58 +15,38 @@ const ChatMessages = () => {
   const { roomId } = useParams();
   const [text, setText] = useState<string>("");
   const session = useSession();
+  const [userDetails, setUserDetails] = useState<UserInfo | null>(null);
 
   useEffect(() => {
-    if (roomId && connect) {
-      let userInfo: UserInfo;
-      if (session?.data !== null) {
-        userInfo = {
-          name: session.data.user?.name ?? "",
-          email: session.data.user?.email ?? "",
-          image: session.data.user?.image ?? "",
-          id: session.data.user?.id ?? "",
-        };
-      } else {
-        userInfo = generateGuestUser();
-      }
-      connect(
-        "join-room",
-        Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""),
-        userInfo
-      );
+    if (!roomId || !connect) return;
+
+    let userInfo: UserInfo;
+
+    if (session.status === "authenticated" && session.data?.user) {
+      userInfo = {
+        name: session.data.user.name ?? "",
+        email: session.data.user.email ?? "",
+        image: session.data.user.image ?? "",
+        id: session.data.user.id ?? "",
+      };
+    } else {
+      userInfo = generateGuestUser();
     }
+
+    setUserDetails(userInfo);
+    connect(
+      "join-room",
+      Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""),
+      userInfo
+    );
 
     return () => {
       if (leaveRoom && roomId) {
         leaveRoom(Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""));
       }
     };
-  }, [roomId]);
+  }, [roomId, session]);
 
-  useEffect(() => {
-    if (roomId) {
-      if (connect && roomId != undefined) {
-        connect(
-          "join-room",
-          Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""),
-          {
-            name:
-              session?.data?.user?.name ??
-              `Guest${Math.floor(Math.random() * 1000)}`,
-            email: session?.data?.user?.email ?? "guest.com",
-            image: session?.data?.user?.image ?? "",
-            id: session?.data?.user?.id ?? "guest-id",
-          }
-        );
-      }
-    }
-
-    return () => {
-      if (leaveRoom && roomId) {
-        leaveRoom(Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""));
-      }
-    };
-  }, [roomId]);
   return (
     <>
       <div className='flex-col relative justify-between p-4 overflow-y-auto space-y-3'>
@@ -74,7 +54,8 @@ const ChatMessages = () => {
           <div
             key={index}
             className={`max-w-1/3  flex-wrap flex flex-col px-4 py-1 rounded-2xl ${
-              message?.userInfo?.name === "me"
+              message?.userInfo?.name === userDetails?.name &&
+              message?.userInfo?.email === userDetails?.email
                 ? "bg-green-600 ml-auto text-right"
                 : "bg-gray-700 mr-auto"
             }`}
@@ -101,12 +82,8 @@ const ChatMessages = () => {
               const normalizedRoomId = Array.isArray(roomId)
                 ? (roomId[0] ?? "")
                 : (roomId ?? "");
-              sendMessage(text, normalizedRoomId, {
-                name: session?.data?.user?.name ?? "Guest",
-                email: session?.data?.user?.email ?? "guest.com",
-                image: session?.data?.user?.image ?? "",
-                id: session?.data?.user?.id ?? "guest-id",
-              });
+              if (sendMessage && userDetails)
+                sendMessage(text, normalizedRoomId, userDetails);
               setText("");
             }
           }}

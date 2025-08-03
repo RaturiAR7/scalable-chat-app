@@ -29,10 +29,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [messages, setMessages] = React.useState<
     {
       msg: string;
-      userInfo: {
-        name: string;
-        email: string;
-      };
+      userInfo: UserInfo;
     }[]
   >([]);
 
@@ -45,7 +42,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
           {
             msg,
             userInfo: {
-              name: "me",
+              name: userInfo.name,
               email: userInfo.email,
               image: userInfo.image,
               id: userInfo.id,
