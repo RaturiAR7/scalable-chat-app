@@ -83,8 +83,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         process.env.NEXT_PUBLIC_BACKEND_URL
       );
       const _socket = io(
-        // process.env.NEXT_PUBLIC_BACKEND_URL ||
-        "http://localhost:8000",
+        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000",
         {
           reconnection: !socket ? true : false,
           reconnectionAttempts: 5,
