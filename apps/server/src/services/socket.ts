@@ -42,13 +42,16 @@ class SocketService {
     const io = this._io;
     /////Connection with socket
     io.on("connect", (socket) => {
-      const username = socket.handshake.query.username;
-      console.log(username, "Connected");
+      const userInfo = socket.handshake?.query?.userInfo;
+      const userInfoParsed = JSON.parse(userInfo as string);
+      console.log(userInfo, "Connected");
 
       //// Connect to a particular room (Private or Global)
       socket.on("join-room", ({ roomId }: { roomId: string }) => {
         socket.join(roomId);
-        console.log(`${username} ${socket.id} joined room ${roomId}`);
+        console.log(
+          `${userInfoParsed?.name} ${socket.id} joined room ${roomId}`
+        );
       });
 
       ///Message in particular room only
@@ -56,23 +59,23 @@ class SocketService {
         "event:room-message",
         ({ roomId, message }: { roomId: string; message: string }) => {
           const rooms = socket.rooms; // Set of rooms this socket is part of
-          console.log("Room Message", username);
+          console.log("Room Message", userInfoParsed?.name);
           // socket.rooms always includes the socket ID itself
           if (!rooms.has(roomId)) {
             console.log(
-              `${username} attempted to message room ${roomId} without joining`
+              `${userInfoParsed?.name} attempted to message room ${roomId} without joining`
             );
             socket.emit("error", `You are not part of room ${roomId}`);
             return;
           }
-          socket.to(roomId).emit("message-from-server", message, username);
+          socket.to(roomId).emit("message-from-server", message, userInfo);
         }
       );
 
       ////Leave room
       socket.on("leave-room", ({ roomId }: { roomId: string }) => {
         socket.leave(roomId);
-        console.log(`${username} left room ${roomId}`);
+        console.log(`${userInfoParsed?.name} left room ${roomId}`);
       });
     });
 
