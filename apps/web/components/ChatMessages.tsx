@@ -1,10 +1,11 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
-import { SocketContext } from "../context/SocketProvider";
+import { SocketContext, UserInfo } from "../context/SocketProvider";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { message } from "../context/SocketProvider";
-import { faker } from "@faker-js/faker";
+import { generateGuestUser } from "../app/lib/generator";
+
 const ChatMessages = () => {
   const socketContext = useContext(SocketContext);
   const messages = socketContext?.messages;
@@ -14,6 +15,34 @@ const ChatMessages = () => {
   const { roomId } = useParams();
   const [text, setText] = useState<string>("");
   const session = useSession();
+
+  useEffect(() => {
+    if (roomId && connect) {
+      let userInfo: UserInfo;
+      if (session?.data !== null) {
+        userInfo = {
+          name: session.data.user?.name ?? "",
+          email: session.data.user?.email ?? "",
+          image: session.data.user?.image ?? "",
+          id: session.data.user?.id ?? "",
+        };
+      } else {
+        userInfo = generateGuestUser();
+      }
+      connect(
+        "join-room",
+        Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""),
+        userInfo
+      );
+    }
+
+    return () => {
+      if (leaveRoom && roomId) {
+        leaveRoom(Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""));
+      }
+    };
+  }, [roomId]);
+
   useEffect(() => {
     if (roomId) {
       if (connect && roomId != undefined) {
@@ -21,16 +50,12 @@ const ChatMessages = () => {
           "join-room",
           Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""),
           {
-            name: session?.data?.user?.name ?? faker.person.fullName(),
-            email:
-              session?.data?.user?.email ??
-              faker.internet.email({
-                firstName: faker.person.fullName().split(" ")[0],
-              }),
+            name:
+              session?.data?.user?.name ??
+              `Guest${Math.floor(Math.random() * 1000)}`,
+            email: session?.data?.user?.email ?? "guest.com",
             image: session?.data?.user?.image ?? "",
-            id:
-              session?.data?.user?.id ??
-              `guest-id${Math.random().toString(36).substring(2, 15)}`,
+            id: session?.data?.user?.id ?? "guest-id",
           }
         );
       }

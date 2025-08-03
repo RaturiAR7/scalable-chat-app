@@ -6,10 +6,10 @@ interface SocketProviderProps {
   children?: React.ReactNode;
 }
 export interface UserInfo {
-  name: string;
-  email: string;
-  image?: string;
-  id?: string;
+  name: string | undefined;
+  email: string | undefined;
+  image?: string | undefined;
+  id?: string | undefined;
 }
 export interface message {
   msg: string;
@@ -83,7 +83,8 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         process.env.NEXT_PUBLIC_BACKEND_URL
       );
       const _socket = io(
-        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000",
+        // process.env.NEXT_PUBLIC_BACKEND_URL ||
+        "http://localhost:8000",
         {
           reconnection: !socket ? true : false,
           reconnectionAttempts: 5,
