@@ -1,40 +1,21 @@
 "use client";
 import React, { useCallback, useEffect } from "react";
 import { io, Socket } from "socket.io-client";
-
-interface SocketProviderProps {
-  children?: React.ReactNode;
-}
-export interface UserInfo {
-  name: string | undefined;
-  email: string | undefined;
-  image?: string | undefined;
-  id?: string | undefined;
-}
-export interface message {
-  msg: string;
-  userInfo: UserInfo;
-}
-interface ISocketContext {
-  sendMessage: (msg: string, roomId: string, userInfo: UserInfo) => void;
-  connect: (type: string, roomId: string, userInfo: UserInfo) => void;
-  leaveRoom: (roomId: string) => void;
-  messages: message[];
-}
+import {
+  UserInfo,
+  message,
+  ISocketContext,
+  SocketProviderProps,
+} from "../app/constants/types";
 
 export const SocketContext = React.createContext<ISocketContext | null>(null);
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = React.useState<Socket>();
-  const [messages, setMessages] = React.useState<
-    {
-      msg: string;
-      userInfo: UserInfo;
-    }[]
-  >([]);
+  const [messages, setMessages] = React.useState<message[]>([]);
 
   const sendMessage: ISocketContext["sendMessage"] = useCallback(
-    (msg, roomId, userInfo) => {
+    (msg, roomId, userInfo: UserInfo) => {
       if (socket && msg) {
         socket.emit("event:room-message", { message: msg, roomId: roomId });
         setMessages((prevMessages) => [
@@ -80,8 +61,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         process.env.NEXT_PUBLIC_BACKEND_URL
       );
       const _socket = io(
-        // process.env.NEXT_PUBLIC_BACKEND_URL ||
-        "http://localhost:8000",
+        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000",
         {
           reconnection: !socket ? true : false,
           reconnectionAttempts: 5,

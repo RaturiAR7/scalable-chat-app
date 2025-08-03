@@ -1,9 +1,9 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
-import { SocketContext, UserInfo } from "../context/SocketProvider";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { message } from "../context/SocketProvider";
+import { SocketContext } from "../context/SocketProvider";
+import { UserInfo, message } from "../app/constants/types";
 import { generateGuestUser } from "../app/lib/generator";
 
 const ChatMessages = () => {
@@ -14,8 +14,8 @@ const ChatMessages = () => {
   const connect = socketContext?.connect;
   const { roomId } = useParams();
   const [text, setText] = useState<string>("");
-  const session = useSession();
   const [userDetails, setUserDetails] = useState<UserInfo | null>(null);
+  const session = useSession();
 
   useEffect(() => {
     if (!roomId || !connect) return;
