@@ -4,7 +4,7 @@ import { SocketContext } from "../context/SocketProvider";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { message } from "../context/SocketProvider";
-
+import { faker } from "@faker-js/faker";
 const ChatMessages = () => {
   const socketContext = useContext(SocketContext);
   const messages = socketContext?.messages;
@@ -14,7 +14,6 @@ const ChatMessages = () => {
   const { roomId } = useParams();
   const [text, setText] = useState<string>("");
   const session = useSession();
-  console.log("Session Data:", session);
   useEffect(() => {
     if (roomId) {
       if (connect && roomId != undefined) {
@@ -22,10 +21,16 @@ const ChatMessages = () => {
           "join-room",
           Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""),
           {
-            name: session?.data?.user?.name ?? "Guest",
-            email: session?.data?.user?.email ?? "guest.com",
+            name: session?.data?.user?.name ?? faker.person.fullName(),
+            email:
+              session?.data?.user?.email ??
+              faker.internet.email({
+                firstName: faker.person.fullName().split(" ")[0],
+              }),
             image: session?.data?.user?.image ?? "",
-            id: session?.data?.user?.id ?? "guest-id",
+            id:
+              session?.data?.user?.id ??
+              `guest-id${Math.random().toString(36).substring(2, 15)}`,
           }
         );
       }
@@ -44,7 +49,7 @@ const ChatMessages = () => {
           <div
             key={index}
             className={`max-w-1/3  flex-wrap flex flex-col px-4 py-1 rounded-2xl ${
-              (message?.userInfo?.email === session?.data?.user?.email) || (session.data==null)
+              message?.userInfo?.name === "me"
                 ? "bg-green-600 ml-auto text-right"
                 : "bg-gray-700 mr-auto"
             }`}

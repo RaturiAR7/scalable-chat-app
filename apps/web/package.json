@@ -11,6 +11,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.9.0",
     "@repo/ui": "*",
     "@tailwindcss/postcss": "^4.1.11",
     "lucide-react": "^0.535.0",

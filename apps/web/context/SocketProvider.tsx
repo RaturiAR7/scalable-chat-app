@@ -40,7 +40,18 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     (msg, roomId, userInfo) => {
       if (socket && msg) {
         socket.emit("event:room-message", { message: msg, roomId: roomId });
-        setMessages((prevMessages) => [...prevMessages, { msg, userInfo }]);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            msg,
+            userInfo: {
+              name: "me",
+              email: userInfo.email,
+              image: userInfo.image,
+              id: userInfo.id,
+            },
+          },
+        ]);
       }
     },
     [socket]
