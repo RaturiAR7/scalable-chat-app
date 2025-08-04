@@ -1,10 +1,13 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { SocketContext } from "../context/SocketProvider";
-import { UserInfo, message } from "../app/constants/types";
+import { UserInfo } from "../app/constants/types";
 import { generateGuestUser } from "../app/lib/generator";
+import { Paperclip, Send } from "lucide-react";
+import avatar from "../public/user.png";
 
 const ChatMessages = () => {
   const socketContext = useContext(SocketContext);
@@ -48,50 +51,118 @@ const ChatMessages = () => {
   }, [roomId, session]);
 
   return (
-    <>
-      <div className='flex-col relative justify-between p-4 overflow-y-auto space-y-3'>
-        {messages?.map((message: message, index: number) => (
-          <div
-            key={index}
-            className={`max-w-1/3  flex-wrap flex flex-col px-4 py-1 rounded-2xl ${
-              message?.userInfo?.name === userDetails?.name &&
-              message?.userInfo?.email === userDetails?.email
-                ? "bg-green-600 ml-auto text-right"
-                : "bg-gray-700 mr-auto"
-            }`}
-          >
-            <p className='text-blue-600 text-xs'>{message?.userInfo?.name}</p>
-            <p className='text-wrap'>{message.msg}</p>
+    <div className='h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col'>
+      {/* Messages Container */}
+      <div className='flex-1 relative z-10 overflow-hidden'>
+        <div className='h-full overflow-y-auto px-6 py-4 space-y-4'>
+          {messages?.map((msg, index) => (
+            <div
+              key={index}
+              className={`flex ${msg.isOwn ? "justify-end" : "justify-start"}`}
+            >
+              <div
+                className={`flex items-end space-x-2 max-w-xs md:max-w-md lg:max-w-lg`}
+              >
+                {!msg.isOwn && (
+                  <div className='w-8 h-8 bg-gradient-to-r bg-black from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-semibold text-white flex-shrink-0'>
+                    <Image
+                      src={msg.userInfo.image || avatar}
+                      height={100}
+                      width={100}
+                      className='rounded-full'
+                      alt='User Avatar'
+                    />
+                  </div>
+                )}
+
+                <div
+                  className={`group ${msg.isOwn ? "items-end" : "items-start"} flex flex-col`}
+                >
+                  {!msg.isOwn && (
+                    <span className='text-xs text-gray-400 mb-1 px-3'>
+                      {msg.userInfo.name}
+                    </span>
+                  )}
+
+                  <div
+                    className={`relative px-4 py-3 rounded-2xl transition-all duration-200 ${
+                      msg.isOwn
+                        ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-br-md"
+                        : "bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-bl-md"
+                    } group-hover:shadow-lg group-hover:scale-105`}
+                  >
+                    <p className='text-sm leading-relaxed'>{msg.msg}</p>
+
+                    <div
+                      className={`flex items-center justify-end space-x-1 mt-1 ${msg.isOwn ? "text-white/70" : "text-gray-400"}`}
+                    >
+                      {/* <span className='text-xs'>{msg.time}</span> */}
+                      {/* {msg.isOwn && getStatusIcon(msg.status)} */}
+                    </div>
+                  </div>
+                </div>
+
+                {msg.isOwn && (
+                  <div className='w-8 h-8 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center text-xs font-semibold text-white flex-shrink-0'>
+                    <Image
+                      src={msg.userInfo.image || avatar}
+                      height={100}
+                      width={100}
+                      className='rounded-full'
+                      alt='User Avatar'
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Message Input */}
+      <div className='relative z-10 bg-white/10 backdrop-blur-lg border-t border-white/20 p-6'>
+        <div className='flex items-end space-x-4'>
+          <button className='p-3 hover:bg-white/10 rounded-full transition-colors flex-shrink-0'>
+            <Paperclip className='w-5 h-5 text-gray-300' />
+          </button>
+
+          <div className='flex-1 relative'>
+            <div className='bg-white/10 border border-white/30 rounded-2xl overflow-hidden'>
+              <textarea
+                onChange={(e) => {
+                  setText(e.target.value);
+                }}
+                value={text}
+                placeholder='Type your message...'
+                className='w-full bg-transparent px-4 py-3 text-white placeholder-gray-400 resize-none focus:outline-none max-h-32 min-h-[3rem]'
+                style={{
+                  height: "auto",
+                  minHeight: "3rem",
+                }}
+              />
+            </div>
           </div>
-        ))}
+
+          <div className='flex items-center space-x-2'>
+            <button
+              onClick={() => {
+                if (sendMessage) {
+                  const normalizedRoomId = Array.isArray(roomId)
+                    ? (roomId[0] ?? "")
+                    : (roomId ?? "");
+                  if (sendMessage && userDetails)
+                    sendMessage(text, normalizedRoomId, userDetails);
+                  setText("");
+                }
+              }}
+              className='p-3 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-full transition-all duration-200 transform hover:scale-105 disabled:hover:scale-100 flex-shrink-0'
+            >
+              <Send className='w-5 h-5 text-white' />
+            </button>
+          </div>
+        </div>
       </div>
-      <div className='p-4 border-t w-full border-gray-700 flex gap-2 fixed bottom-0 bg-gray-800 '>
-        <input
-          onChange={(e) => {
-            setText(e.target.value);
-          }}
-          value={text}
-          type='text'
-          className='flex-1 px-4 py-2 rounded-md'
-          placeholder='Type your message...'
-        />
-        <button
-          className='bg-green-600 px-4 py-2 rounded-md hover:bg-green-700'
-          onClick={() => {
-            if (sendMessage) {
-              const normalizedRoomId = Array.isArray(roomId)
-                ? (roomId[0] ?? "")
-                : (roomId ?? "");
-              if (sendMessage && userDetails)
-                sendMessage(text, normalizedRoomId, userDetails);
-              setText("");
-            }
-          }}
-        >
-          Send
-        </button>
-      </div>
-    </>
+    </div>
   );
 };
 

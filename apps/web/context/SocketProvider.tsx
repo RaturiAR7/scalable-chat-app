@@ -28,6 +28,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
               image: userInfo.image,
               id: userInfo.id,
             },
+            isOwn: true,
           },
         ]);
       }
@@ -44,7 +45,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     const userInfoParsed = JSON.parse(userInfo);
     setMessages((prevMessages) => [
       ...prevMessages,
-      { msg, userInfo: userInfoParsed },
+      { msg, userInfo: userInfoParsed, isOwn: false },
     ]);
   }, []);
   const onDisconnect = useCallback(() => {
