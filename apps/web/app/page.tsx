@@ -5,23 +5,23 @@ export default function ChatGlobalLanding() {
   return (
     <div className='min-h-screen relative overflow-hidden'>
       {/* Main Content */}
-      <main className='relative z-10 flex flex-col items-center justify-center min-h-screen px-6'>
+      <main className='relative z-10 flex flex-col items-center justify-center min-h-screen px-4 md:px-6'>
         <div
           className={`text-center max-w-4xl mx-auto transition-all duration-1000 transform  "translate-y-10 opacity-0"`}
         >
           {/* Hero Title */}
           <div className='mb-8'>
-            <h2 className='text-6xl md:text-7xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent mb-6 leading-tight'>
+            <h2 className='text-4xl sm:text-5xl md:text-7xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent mb-6 leading-tight'>
               Connect with the
               <span className='block bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent'>
                 World Instantly
               </span>
             </h2>
-            <p className='text-xl md:text-2xl text-gray-300 mb-4 leading-relaxed'>
+            <p className='text-base sm:text-lg md:text-2xl text-gray-300 mb-4 leading-relaxed'>
               Join global chat rooms or private spaces — real-time, fast, and
               secure.
             </p>
-            <p className='text-lg text-gray-400'>
+            <p className='text-sm sm:text-base md:text-lg text-gray-400'>
               Experience the future of communication.
             </p>
           </div>
@@ -44,21 +44,21 @@ export default function ChatGlobalLanding() {
           {/* Stats */}
           <div className='flex justify-center items-center space-x-8 text-center'>
             <div className='group'>
-              <div className='text-3xl font-bold text-emerald-400 group-hover:scale-110 transition-transform duration-300'>
+              <div className='text-xl sm:text-2xl md:text-3xl font-bold text-emerald-400 group-hover:scale-110 transition-transform duration-300'>
                 1M+
               </div>
               <div className='text-gray-400 text-sm'>Active Users</div>
             </div>
             <div className='w-px h-12 bg-gray-600'></div>
             <div className='group'>
-              <div className='text-3xl font-bold text-cyan-400 group-hover:scale-110 transition-transform duration-300'>
+              <div className='text-xl sm:text-2xl md:text-3xl font-bold text-cyan-400 group-hover:scale-110 transition-transform duration-300'>
                 50K+
               </div>
               <div className='text-gray-400 text-sm'>Chat Rooms</div>
             </div>
             <div className='w-px h-12 bg-gray-600'></div>
             <div className='group'>
-              <div className='text-3xl font-bold text-purple-400 group-hover:scale-110 transition-transform duration-300'>
+              <div className='text-xl sm:text-2xl md:text-3xl font-bold text-purple-400 group-hover:scale-110 transition-transform duration-300'>
                 99.9%
               </div>
               <div className='text-gray-400 text-sm'>Uptime</div>
