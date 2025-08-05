@@ -68,7 +68,9 @@ class SocketService {
             socket.emit("error", `You are not part of room ${roomId}`);
             return;
           }
-          socket.to(roomId).emit("message-from-server", message, userInfo);
+          socket
+            .to(roomId)
+            .emit("message-from-server", message, userInfo, new Date());
         }
       );
 

@@ -29,6 +29,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
               id: userInfo.id,
             },
             isOwn: true,
+            date: new Date(),
           },
         ]);
       }
@@ -41,13 +42,16 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       socket.emit("leave-room", { roomId: roomId });
     }
   };
-  const onMessageRec = useCallback((msg: string, userInfo: string) => {
-    const userInfoParsed = JSON.parse(userInfo);
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { msg, userInfo: userInfoParsed, isOwn: false },
-    ]);
-  }, []);
+  const onMessageRec = useCallback(
+    (msg: string, userInfo: string, date: Date) => {
+      const userInfoParsed = JSON.parse(userInfo);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { msg, userInfo: userInfoParsed, isOwn: false, date },
+      ]);
+    },
+    []
+  );
   const onDisconnect = useCallback(() => {
     console.log("Disconnected from server");
   }, []);

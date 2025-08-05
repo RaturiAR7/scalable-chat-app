@@ -8,6 +8,7 @@ export interface message {
   msg: string;
   userInfo: UserInfo;
   isOwn: boolean;
+  date: Date;
 }
 export interface ISocketContext {
   sendMessage: (msg: string, roomId: string, userInfo: UserInfo) => void;
