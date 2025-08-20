@@ -65,6 +65,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         "Connecting to socket server...",
         process.env.NEXT_PUBLIC_BACKEND_URL
       );
+      console.log("User Info:", JSON.stringify(userInfo));
       const _socket = io(
         process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000",
         {

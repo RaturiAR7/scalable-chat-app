@@ -96,7 +96,11 @@ const ChatMessages = () => {
                     <div
                       className={`flex items-center justify-end space-x-1 mt-1 ${isOwn ? "text-white/70" : "text-gray-400"}`}
                     >
-                      <span className='text-xs'>{`${(date?.getHours() - 12).toString()}:${date?.getMinutes().toString()}`}</span>
+                      <span className='text-xs'>
+                        {date
+                          ? `${new Date(date).getHours() % 12}:${new Date(date).getMinutes().toString().padStart(2, "0")}`
+                          : ""}
+                      </span>
                       {/* {msg.isOwn && getStatusIcon(msg.status)} */}
                     </div>
                   </div>
