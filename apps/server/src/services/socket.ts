@@ -2,7 +2,6 @@ import { Server } from "socket.io";
 import { createClient } from "redis";
 import { createAdapter } from "@socket.io/redis-adapter";
 import prismaClient from "./prisma";
-import { text } from "stream/consumers";
 
 require("dotenv").config();
 
@@ -51,11 +50,38 @@ class SocketService {
       //// Connect to a particular room (Private or Global)
       socket.on("join-room", async ({ roomId }: { roomId: string }) => {
         socket.join(roomId);
+        ////Create Room If not created
+        const room = await prismaClient.room.upsert({
+          where: { id: roomId },
+          update: {}, // do nothing if exists
+          create: { id: roomId, name: `Room ${roomId}` },
+        });
         console.log(
           `${userInfoParsed?.name} ${socket.id} joined room ${roomId}`
         );
-        const messages = await prismaClient.message.findMany();
-        console.log("messages", messages);
+        ////Create user
+        const user = await prismaClient.user.upsert({
+          where: { id: userInfoParsed.id },
+          update: {},
+          create: { id: userInfoParsed.id, name: userInfoParsed.name },
+        });
+        const messages = await prismaClient.message.findMany({
+          where: { roomId },
+          orderBy: { createdAt: "asc" }, // oldest first
+          include: {
+            sender: true, // so you can show who sent each message
+          },
+        });
+        console.log(messages);
+        messages.forEach((message) => {
+          const userInfo = JSON.stringify({
+            name: message.sender.name,
+            id: message.senderId,
+          });
+          socket
+            .to(roomId)
+            .emit("message-from-server", message.text, userInfo, new Date());
+        });
       });
 
       ///Message in particular room only
@@ -75,9 +101,14 @@ class SocketService {
           socket
             .to(roomId)
             .emit("message-from-server", message, userInfo, new Date());
+
+          ////Save message in db
           await prismaClient.message.create({
             data: {
+              id: crypto.randomUUID(),
               text: message,
+              roomId: roomId,
+              senderId: userInfoParsed.id,
             },
           });
         }

@@ -13,10 +13,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Message{
-  id String @id @default(uuid())
-  text String
-  createdAt DateTime @default(now()) @map("created_at")
+model User {
+  id        String       @id
+  name      String
+  messages  Message[]
+}
 
-  @@map("messages")
+model Room {
+  id        String       @id
+  name      String
+  isGlobal  Boolean   @default(false)
+  messages  Message[]
+}
+
+model Message {
+  id        String       @id 
+  text      String
+  createdAt DateTime  @default(now())
+
+  // Relations
+  roomId    String
+  room      Room      @relation(fields: [roomId], references: [id])
+
+  senderId  String
+  sender    User      @relation(fields: [senderId], references: [id])
 }
