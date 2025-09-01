@@ -53,6 +53,27 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     },
     []
   );
+  const onPreviousMessageRec = useCallback(
+    (
+      msgs: {
+        text: string;
+        sender: string;
+        isOwn: boolean;
+        createdAt: string;
+      }[]
+    ) => {
+      console.log("Previous messages:", msgs);
+      setMessages(
+        msgs.map((msg: any) => ({
+          msg: msg.text,
+          userInfo: msg.sender,
+          isOwn: msg.isOwn,
+          date: new Date(msg.createdAt),
+        }))
+      );
+    },
+    []
+  );
   const onDisconnect = useCallback(() => {
     console.log("Disconnected from server");
   }, []);
@@ -78,6 +99,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       );
 
       _socket.on("message-from-server", onMessageRec);
+      _socket.on("previous-messages", onPreviousMessageRec);
       _socket.on("disconnect", onDisconnect);
 
       if (roomId) {

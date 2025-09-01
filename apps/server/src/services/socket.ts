@@ -73,15 +73,28 @@ class SocketService {
           },
         });
         console.log(messages);
-        messages.forEach((message) => {
-          const userInfo = JSON.stringify({
-            name: message.sender.name,
-            id: message.senderId,
-          });
-          socket
-            .to(roomId)
-            .emit("message-from-server", message.text, userInfo, new Date());
-        });
+        ////Send old messages
+        // messages.forEach((message) => {
+        //   const userInfo = JSON.stringify({
+        //     name: message.sender.name,
+        //     id: message.senderId,
+        //   });
+        //   socket
+        //     .to(roomId)
+        //     .emit("message-from-server", message.text, userInfo, new Date());
+        // });
+        socket.emit(
+          "previous-messages",
+          messages.map((msg) => ({
+            id: msg.id,
+            text: msg.text,
+            createdAt: msg.createdAt,
+            sender: {
+              id: msg.sender.id,
+              name: msg.sender.name,
+            },
+          }))
+        );
       });
 
       ///Message in particular room only
