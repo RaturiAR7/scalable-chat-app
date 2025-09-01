@@ -1,6 +1,8 @@
 import { Server } from "socket.io";
 import { createClient } from "redis";
 import { createAdapter } from "@socket.io/redis-adapter";
+import prismaClient from "./prisma";
+import { text } from "stream/consumers";
 
 require("dotenv").config();
 
@@ -47,17 +49,19 @@ class SocketService {
       console.log(userInfo, "Connected");
 
       //// Connect to a particular room (Private or Global)
-      socket.on("join-room", ({ roomId }: { roomId: string }) => {
+      socket.on("join-room", async ({ roomId }: { roomId: string }) => {
         socket.join(roomId);
         console.log(
           `${userInfoParsed?.name} ${socket.id} joined room ${roomId}`
         );
+        const messages = await prismaClient.message.findMany();
+        console.log("messages", messages);
       });
 
       ///Message in particular room only
       socket.on(
         "event:room-message",
-        ({ roomId, message }: { roomId: string; message: string }) => {
+        async ({ roomId, message }: { roomId: string; message: string }) => {
           const rooms = socket.rooms; // Set of rooms this socket is part of
           console.log("Room Message", userInfoParsed?.name);
           // socket.rooms always includes the socket ID itself
@@ -71,6 +75,11 @@ class SocketService {
           socket
             .to(roomId)
             .emit("message-from-server", message, userInfo, new Date());
+          await prismaClient.message.create({
+            data: {
+              text: message,
+            },
+          });
         }
       );
 
