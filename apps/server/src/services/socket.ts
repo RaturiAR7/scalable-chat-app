@@ -74,15 +74,6 @@ class SocketService {
         });
         console.log(messages);
         ////Send old messages
-        // messages.forEach((message) => {
-        //   const userInfo = JSON.stringify({
-        //     name: message.sender.name,
-        //     id: message.senderId,
-        //   });
-        //   socket
-        //     .to(roomId)
-        //     .emit("message-from-server", message.text, userInfo, new Date());
-        // });
         socket.emit(
           "previous-messages",
           messages.map((msg) => ({
