@@ -6,6 +6,7 @@ import {
   message,
   ISocketContext,
   SocketProviderProps,
+  previousMessageDataType,
 } from "../app/constants/types";
 
 export const SocketContext = React.createContext<ISocketContext | null>(null);
@@ -54,21 +55,14 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     []
   );
   const onPreviousMessageRec = useCallback(
-    (
-      msgs: {
-        text: string;
-        sender: string;
-        isOwn: boolean;
-        createdAt: string;
-      }[]
-    ) => {
-      console.log("Previous messages:", msgs);
+    (previousMessageData: previousMessageDataType[]) => {
+      console.log("Previous messages:", previousMessageData);
       setMessages(
-        msgs.map((msg: any) => ({
-          msg: msg.text,
-          userInfo: msg.sender,
-          isOwn: msg.isOwn,
-          date: new Date(msg.createdAt),
+        previousMessageData.map((msgData: previousMessageDataType) => ({
+          msg: msgData.text,
+          userInfo: msgData.sender,
+          isOwn: msgData.isOwn,
+          date: new Date(msgData.createdAt),
         }))
       );
     },

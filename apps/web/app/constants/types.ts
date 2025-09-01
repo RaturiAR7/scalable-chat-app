@@ -19,3 +19,15 @@ export interface ISocketContext {
 export interface SocketProviderProps {
   children?: React.ReactNode;
 }
+
+export interface previousMessageDataType {
+  text: string;
+  sender: {
+    name: string;
+    email: string;
+    image: string;
+    id: string;
+  };
+  isOwn: boolean;
+  createdAt: string;
+}
