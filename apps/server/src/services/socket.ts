@@ -14,15 +14,16 @@ const subClient = pubClient.duplicate();
 class SocketService {
   private _io: Server;
 
-  constructor() {
+  constructor(httpServer: any) {
     console.log("Init Socket Service...");
-    this._io = new Server({
+    this._io = new Server(httpServer, {
       cors: {
-        allowedHeaders: ["*"],
         origin: [
           "https://scalable-chat-app-web-gilt.vercel.app",
           "http://localhost:3000",
         ],
+        methods: ["GET", "POST"],
+        credentials: true,
       },
     });
 
