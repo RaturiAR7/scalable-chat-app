@@ -1,8 +1,10 @@
 import http from "http";
 import SocketService from "./services/socket";
+import { startMessageConsumer } from "./services/kafka";
 
 async function init() {
   const socketService = new SocketService();
+  startMessageConsumer();
 
   const httpServer = http.createServer();
   const PORT = parseInt(process.env.PORT || "8000", 10); // <-- Fix here

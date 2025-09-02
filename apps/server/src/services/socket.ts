@@ -52,6 +52,7 @@ class SocketService {
       socket.on("join-room", async ({ roomId }: { roomId: string }) => {
         socket.join(roomId);
         ////Create Room If not created
+
         const room = await prismaClient.room.upsert({
           where: { id: roomId },
           update: {}, // do nothing if exists
@@ -60,6 +61,7 @@ class SocketService {
         console.log(
           `${userInfoParsed?.name} ${socket.id} joined room ${roomId}`
         );
+
         ////Create user
         const user = await prismaClient.user.upsert({
           where: { id: userInfoParsed.id },
@@ -108,14 +110,16 @@ class SocketService {
             .emit("message-from-server", message, userInfo, new Date());
 
           ////Save message in db
-          await prismaClient.message.create({
-            data: {
-              id: crypto.randomUUID(),
-              text: message,
-              roomId: roomId,
-              senderId: userInfoParsed.id,
-            },
-          });
+          await produceMessage(message, roomId, userInfoParsed);
+          console.log("Message produced to Kafka broker");
+          // await prismaClient.message.create({
+          //   data: {
+          //     id: crypto.randomUUID(),
+          //     text: message,
+          //     roomId: roomId,
+          //     senderId: userInfoParsed.id,
+          //   },
+          // });
         }
       );
 
