@@ -5,7 +5,7 @@ import prismaClient from "./prisma";
 const kafka = new Kafka({
   brokers: [process.env.KAFKA_HOST_URL!],
   ssl: {
-    ca: [fs.readFileSync(path.resolve("./ca.pem"), "utf-8")],
+    ca: [fs.readFileSync(path.resolve("../../ca.pem"), "utf-8")],
   },
   sasl: {
     username: process.env.KAFKA_USERNAME!,
