@@ -1,11 +1,10 @@
 import { Kafka, Producer } from "kafkajs";
-import fs from "fs";
-import path from "path";
+
 import prismaClient from "./prisma";
 const kafka = new Kafka({
   brokers: [process.env.KAFKA_HOST_URL!],
   ssl: {
-    ca: [fs.readFileSync(path.resolve("../../ca.pem"), "utf-8")],
+    // ca: [process.env.CA_PEM!],
   },
   sasl: {
     username: process.env.KAFKA_USERNAME!,
@@ -30,17 +29,21 @@ export async function produceMessage(
   roomId: string,
   userInfo: { name: string; image: string; id: string; email: string }
 ) {
-  const producer = await createProducer();
-  await producer.send({
-    messages: [
-      {
-        key: `message-${Date.now()}`,
-        value: JSON.stringify({ message, roomId, userInfo }),
-      },
-    ],
-    topic: "MESSAGES",
-  });
-  return true;
+  try {
+    const producer = await createProducer();
+    await producer.send({
+      messages: [
+        {
+          key: `message-${Date.now()}`,
+          value: JSON.stringify({ message, roomId, userInfo }),
+        },
+      ],
+      topic: "MESSAGES",
+    });
+    return true;
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function startMessageConsumer() {

@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 import { createClient } from "redis";
 import { createAdapter } from "@socket.io/redis-adapter";
 import prismaClient from "./prisma";
-import { produceMessage } from "./kafka";
+// import { produceMessage } from "./kafka";
 
 require("dotenv").config();
 
@@ -109,17 +109,18 @@ class SocketService {
             .to(roomId)
             .emit("message-from-server", message, userInfo, new Date());
 
-          ////Save message in db
-          await produceMessage(message, roomId, userInfoParsed);
-          console.log("Message produced to Kafka broker");
-          // await prismaClient.message.create({
-          //   data: {
-          //     id: crypto.randomUUID(),
-          //     text: message,
-          //     roomId: roomId,
-          //     senderId: userInfoParsed.id,
-          //   },
-          // });
+          ////Use Kafka producer consumer
+          // await produceMessage(message, roomId, userInfoParsed);
+          // console.log("Message produced to Kafka broker");
+          /////for production as kafka not working directly insert into db
+          await prismaClient.message.create({
+            data: {
+              id: crypto.randomUUID(),
+              text: message,
+              roomId: roomId,
+              senderId: userInfoParsed.id,
+            },
+          });
         }
       );
 
