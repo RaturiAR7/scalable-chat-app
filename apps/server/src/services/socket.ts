@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import { createClient } from "redis";
 import { createAdapter } from "@socket.io/redis-adapter";
 import prismaClient from "./prisma";
+import { produceMessage } from "./kafka";
 
 require("dotenv").config();
 
