@@ -54,10 +54,8 @@ export async function startMessageConsumer() {
     autoCommit: true,
     eachMessage: async ({ message, pause }) => {
       if (!message.value) return;
-      console.log(`New Message Received...`);
       try {
         const payLoad = JSON.parse(message.value.toString());
-        console.log("Store in DB", payLoad);
         await prismaClient.message.create({
           data: {
             id: crypto.randomUUID(),

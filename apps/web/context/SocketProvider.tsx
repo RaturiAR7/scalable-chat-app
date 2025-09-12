@@ -46,7 +46,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const onMessageRec = useCallback(
     (msg: string, userInfo: string, date: Date) => {
       const userInfoParsed = JSON.parse(userInfo);
-      console.log("Message from server:", msg, userInfoParsed, date);
       setMessages((prevMessages) => [
         ...prevMessages,
         { msg, userInfo: userInfoParsed, isOwn: false, date },
@@ -56,7 +55,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   );
   const onPreviousMessageRec = useCallback(
     (previousMessageData: previousMessageDataType[]) => {
-      console.log("Previous messages:", previousMessageData);
       setMessages(
         previousMessageData.map((msgData: previousMessageDataType) => ({
           msg: msgData.text,
@@ -69,7 +67,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     []
   );
   const onDisconnect = useCallback(() => {
-    console.log("Disconnected from server");
+    alert("Disconnected from server");
   }, []);
 
   const connect: ISocketContext["connect"] = useCallback(
@@ -77,11 +75,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       if (socket) {
         socket.disconnect(); // disconnect the previous socket
       }
-      console.log(
-        "Connecting to socket server...",
-        process.env.NEXT_PUBLIC_BACKEND_URL
-      );
-      console.log("User Info:", JSON.stringify(userInfo));
       const _socket = io(
         process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000",
         {

@@ -6,7 +6,6 @@ import prismaClient from "./prisma";
 
 require("dotenv").config();
 
-console.log(process.env.REDIS_URL);
 const pubClient = createClient({
   url: process.env.REDIS_URL || "redis://localhost:6379",
 });
@@ -46,7 +45,6 @@ class SocketService {
     io.on("connect", (socket) => {
       const userInfo = socket.handshake?.query?.userInfo;
       const userInfoParsed = JSON.parse(userInfo as string);
-      console.log(userInfo, "Connected");
 
       //// Connect to a particular room (Private or Global)
       socket.on("join-room", async ({ roomId }: { roomId: string }) => {
@@ -58,9 +56,6 @@ class SocketService {
           update: {}, // do nothing if exists
           create: { id: roomId, name: `Room ${roomId}` },
         });
-        console.log(
-          `${userInfoParsed?.name} ${socket.id} joined room ${roomId}`
-        );
 
         ////Create user
         const user = await prismaClient.user.upsert({
@@ -80,7 +75,6 @@ class SocketService {
             sender: true, // so you can show who sent each message
           },
         });
-        console.log(messages);
         ////Send old messages
         socket.emit(
           "previous-messages",
@@ -103,12 +97,8 @@ class SocketService {
         "event:room-message",
         async ({ roomId, message }: { roomId: string; message: string }) => {
           const rooms = socket.rooms; // Set of rooms this socket is part of
-          console.log("Room Message", userInfoParsed?.name);
           // socket.rooms always includes the socket ID itself
           if (!rooms.has(roomId)) {
-            console.log(
-              `${userInfoParsed?.name} attempted to message room ${roomId} without joining`
-            );
             socket.emit("error", `You are not part of room ${roomId}`);
             return;
           }
@@ -134,7 +124,6 @@ class SocketService {
       ////Leave room
       socket.on("leave-room", ({ roomId }: { roomId: string }) => {
         socket.leave(roomId);
-        console.log(`${userInfoParsed?.name} left room ${roomId}`);
       });
     });
 
