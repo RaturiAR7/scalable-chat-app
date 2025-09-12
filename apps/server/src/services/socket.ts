@@ -66,7 +66,11 @@ class SocketService {
         const user = await prismaClient.user.upsert({
           where: { id: userInfoParsed.id },
           update: {},
-          create: { id: userInfoParsed.id, name: userInfoParsed.name },
+          create: {
+            id: userInfoParsed.id,
+            name: userInfoParsed.name,
+            email: userInfoParsed.email,
+          },
         });
         const messages = await prismaClient.message.findMany({
           where: { roomId },
