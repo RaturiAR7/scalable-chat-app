@@ -70,6 +70,7 @@ class SocketService {
             id: userInfoParsed.id,
             name: userInfoParsed.name,
             email: userInfoParsed.email,
+            image: userInfoParsed.image,
           },
         });
         const messages = await prismaClient.message.findMany({
@@ -90,6 +91,8 @@ class SocketService {
             sender: {
               id: msg.sender.id,
               name: msg.sender.name,
+              email: msg.sender.email,
+              image: msg.sender.image,
             },
           }))
         );

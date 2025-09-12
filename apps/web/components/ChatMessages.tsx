@@ -49,7 +49,6 @@ const ChatMessages = () => {
       }
     };
   }, [roomId, session]);
-  // console.log("Mail", userDetails?.email);
 
   return (
     <div className='h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col'>
@@ -57,11 +56,11 @@ const ChatMessages = () => {
       <div className='flex-1 relative z-10 overflow-hidden'>
         <div className='h-full overflow-y-auto px-6 py-4 space-y-4'>
           {messages?.map(({ msg, date, isOwn, userInfo }, index) => {
-            console.log("UserInfo", userInfo.email);
+            if (userInfo.email === userDetails?.email) isOwn = true;
             return (
               <div
                 key={index}
-                className={`flex ${isOwn || userInfo.email === userDetails?.email ? "justify-end" : "justify-start"}`}
+                className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
               >
                 <div
                   className={`flex items-end space-x-2 max-w-xs md:max-w-md lg:max-w-lg`}

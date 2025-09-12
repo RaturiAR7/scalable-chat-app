@@ -17,6 +17,7 @@ model User {
   id        String       @id
   name      String
   email     String
+  image     String @default("https://pixabay.com/vectors/blank-profile-picture-mystery-man-973460/")
   messages  Message[]
 }
 
