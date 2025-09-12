@@ -78,3 +78,4 @@ export async function startMessageConsumer() {
 }
 
 export default kafka;
+
