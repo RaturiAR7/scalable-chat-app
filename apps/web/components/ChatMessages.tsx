@@ -50,6 +50,18 @@ const ChatMessages = () => {
     };
   }, [roomId, session]);
 
+  const sendMessageHandler = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (sendMessage) {
+      const normalizedRoomId = Array.isArray(roomId)
+        ? (roomId[0] ?? "")
+        : (roomId ?? "");
+      if (sendMessage && userDetails)
+        sendMessage(text, normalizedRoomId, userDetails);
+      setText("");
+    }
+  };
+
   return (
     <div className='h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col'>
       {/* Messages Container */}
@@ -128,14 +140,16 @@ const ChatMessages = () => {
 
       {/* Message Input */}
       <div className='relative z-10 bg-white/10 backdrop-blur-lg border-t border-white/20 p-6'>
-        <div className='flex items-end space-x-4'>
-          {/* <button className='p-3 hover:bg-white/10 rounded-full transition-colors flex-shrink-0'>
-            <Paperclip className='w-5 h-5 text-gray-300' />
-          </button> */}
+        <form
+          className='flex items-end space-x-4'
+          onSubmit={sendMessageHandler}
+        >
 
           <div className='flex-1 relative'>
             <div className='bg-white/10 border border-white/30 rounded-2xl overflow-hidden'>
-              <textarea
+              <input
+                type='text'
+                name='message'
                 onChange={(e) => {
                   setText(e.target.value);
                 }}
@@ -152,22 +166,13 @@ const ChatMessages = () => {
 
           <div className='flex items-center space-x-2'>
             <button
-              onClick={() => {
-                if (sendMessage) {
-                  const normalizedRoomId = Array.isArray(roomId)
-                    ? (roomId[0] ?? "")
-                    : (roomId ?? "");
-                  if (sendMessage && userDetails)
-                    sendMessage(text, normalizedRoomId, userDetails);
-                  setText("");
-                }
-              }}
+              type='submit'
               className='p-3 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-full transition-all duration-200 transform hover:scale-105 disabled:hover:scale-100 flex-shrink-0'
             >
               <Send className='w-5 h-5 text-white' />
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

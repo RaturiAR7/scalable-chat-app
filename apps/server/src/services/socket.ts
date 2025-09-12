@@ -24,6 +24,8 @@ class SocketService {
           "http://localhost:3000",
         ],
       },
+      pingInterval: 25000,
+      pingTimeout: 60000,
     });
 
     // 💡 Connect clients and apply the adapter with a JSON parser
