@@ -144,7 +144,6 @@ const ChatMessages = () => {
           className='flex items-end space-x-4'
           onSubmit={sendMessageHandler}
         >
-
           <div className='flex-1 relative'>
             <div className='bg-white/10 border border-white/30 rounded-2xl overflow-hidden'>
               <input
