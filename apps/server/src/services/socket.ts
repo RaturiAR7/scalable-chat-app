@@ -19,10 +19,7 @@ class SocketService {
     this._io = new Server({
       cors: {
         allowedHeaders: ["*"],
-        origin: [
-          "https://scalable-chat-app-web-gilt.vercel.app",
-          "http://localhost:3000",
-        ],
+        origin: [`${process.env.FRONTEND_ORIGIN_URL}`, "http://localhost:3000"],
       },
       pingInterval: 25000,
       pingTimeout: 60000,

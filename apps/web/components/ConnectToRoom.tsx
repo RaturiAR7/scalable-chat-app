@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Globe, Users } from "lucide-react";
 
 export default function ConnectToRoom() {
-  const [roomId, setRoomId] = useState<string>("");
+  const [roomId, setRoomId] = useState<string>("Global");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -29,7 +29,7 @@ export default function ConnectToRoom() {
 
   const handleCreateRoom = async () => {
     setLoading(true);
-    await waitForServer(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/health`);
+    await waitForServer(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/health`);
     setLoading(false);
     router.push(`/connect/${roomId}`);
   };
@@ -48,7 +48,7 @@ export default function ConnectToRoom() {
           <input
             type='text'
             placeholder='Enter room name...'
-            value={roomId}
+            // value={roomId}
             onChange={(e) => setRoomId(e.target.value)}
             className='w-full bg-white/10 border border-white/30 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300'
           />
@@ -74,7 +74,7 @@ export default function ConnectToRoom() {
           Connect with people from around the world in our main chat room
         </p>
         <button
-          onClick={() => router.push(`/connect/global`)}
+          onClick={handleCreateRoom}
           className='w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105'
         >
           Chat Globally
