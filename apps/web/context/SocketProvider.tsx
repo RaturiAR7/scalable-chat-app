@@ -14,6 +14,7 @@ export const SocketContext = React.createContext<ISocketContext | null>(null);
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = React.useState<Socket>();
   const [messages, setMessages] = React.useState<message[]>([]);
+  const [typers, setTypers] = React.useState<string[]>([]);
 
   const sendMessage: ISocketContext["sendMessage"] = useCallback(
     (msg, roomId, userInfo: UserInfo) => {
@@ -37,12 +38,23 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     },
     [socket]
   );
+  const typeMessage: ISocketContext["typeMessage"] = (
+    roomId: string,
+    username: string
+  ) => {
+    if (socket && roomId && username) {
+      socket.emit("typing-message", roomId, username);
+    }
+  };
 
   const leaveRoom: ISocketContext["leaveRoom"] = (roomId: string) => {
     if (socket) {
       socket.emit("leave-room", { roomId: roomId });
     }
   };
+  const onTypingRec = useCallback((username: string) => {
+    setTypers((prevTypers) => [...prevTypers, username]);
+  }, []);
   const onMessageRec = useCallback(
     (msg: string, userInfo: string, date: Date) => {
       const userInfoParsed = JSON.parse(userInfo);
@@ -87,6 +99,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
       _socket.on("message-from-server", onMessageRec);
       _socket.on("previous-messages", onPreviousMessageRec);
+      _socket.on("message-typing", onTypingRec);
       _socket.on("disconnect", onDisconnect);
 
       if (roomId) {
@@ -95,7 +108,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
       setSocket(_socket); // this will be available on next render
     },
-    [onMessageRec, onDisconnect, socket]
+    [onMessageRec, onDisconnect, socket, onTypingRec, onPreviousMessageRec]
   );
 
   useEffect(() => {
@@ -108,7 +121,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
   return (
     <SocketContext.Provider
-      value={{ sendMessage, connect, messages, leaveRoom }}
+      value={{ sendMessage, connect, messages, leaveRoom, typeMessage, typers }}
     >
       {children}
     </SocketContext.Provider>

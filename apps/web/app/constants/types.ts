@@ -14,7 +14,9 @@ export interface ISocketContext {
   sendMessage: (msg: string, roomId: string, userInfo: UserInfo) => void;
   connect: (type: string, roomId: string, userInfo: UserInfo) => void;
   leaveRoom: (roomId: string) => void;
+  typeMessage: (roomId: string, username: string) => void;
   messages: message[];
+  typers: string[];
 }
 export interface SocketProviderProps {
   children?: React.ReactNode;

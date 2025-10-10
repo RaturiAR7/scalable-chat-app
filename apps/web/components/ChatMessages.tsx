@@ -12,6 +12,8 @@ import { Send } from "lucide-react";
 const ChatMessages = () => {
   const socketContext = useContext(SocketContext);
   const messages = socketContext?.messages;
+  const typers = socketContext?.typers;
+  const typeMessage = socketContext?.typeMessage;
   const sendMessage = socketContext?.sendMessage;
   const leaveRoom = socketContext?.leaveRoom;
   const connect = socketContext?.connect;
@@ -22,9 +24,7 @@ const ChatMessages = () => {
 
   useEffect(() => {
     if (!roomId || !connect) return;
-
     let userInfo: UserInfo;
-
     if (session.status === "authenticated" && session.data?.user) {
       userInfo = {
         name: session.data.user.name ?? "",
@@ -35,20 +35,27 @@ const ChatMessages = () => {
     } else {
       userInfo = generateGuestUser();
     }
-
     setUserDetails(userInfo);
     connect(
       "join-room",
       Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""),
       userInfo
     );
-
     return () => {
       if (leaveRoom && roomId) {
         leaveRoom(Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""));
       }
     };
   }, [roomId, session]);
+
+  useEffect(() => {
+    if (typeMessage && text && userDetails?.name && roomId) {
+      typeMessage(
+        Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""),
+        userDetails.name
+      );
+    }
+  }, [text, userDetails?.name, typeMessage, roomId]);
 
   const sendMessageHandler = (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,6 +147,11 @@ const ChatMessages = () => {
 
       {/* Message Input */}
       <div className='relative z-10 bg-white/10 backdrop-blur-lg border-t border-white/20 p-6'>
+        {typers && typers.length > 0 && (
+          <div className='mb-2 text-sm text-gray-300 italic'>
+            {typers.join(", ")} {typers.length === 1 ? "is" : "are"} typing...
+          </div>
+        )}
         <form
           className='flex items-end space-x-4'
           onSubmit={sendMessageHandler}

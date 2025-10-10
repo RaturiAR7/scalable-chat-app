@@ -90,7 +90,10 @@ class SocketService {
           }))
         );
       });
-
+      /////typing indicator
+      socket.on("typing-message", async (roomId: string, username: string) => {
+        socket.to(roomId).emit("message-typing", username);
+      });
       ///Message in particular room only
       socket.on(
         "event:room-message",
