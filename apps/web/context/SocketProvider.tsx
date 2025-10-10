@@ -53,7 +53,9 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     }
   };
   const onTypingRec = useCallback((username: string) => {
-    setTypers((prevTypers) => [...prevTypers, username]);
+    setTypers((prevTypers) =>
+      prevTypers.includes(username) ? prevTypers : [...prevTypers, username]
+    );
   }, []);
   const onMessageRec = useCallback(
     (msg: string, userInfo: string, date: Date) => {

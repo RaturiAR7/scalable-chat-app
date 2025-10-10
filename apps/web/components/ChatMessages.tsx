@@ -36,11 +36,7 @@ const ChatMessages = () => {
       userInfo = generateGuestUser();
     }
     setUserDetails(userInfo);
-    connect(
-      "join-room",
-      Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""),
-      userInfo
-    );
+    connect("join-room", roomId as string, userInfo);
     return () => {
       if (leaveRoom && roomId) {
         leaveRoom(Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""));
@@ -50,10 +46,7 @@ const ChatMessages = () => {
 
   useEffect(() => {
     if (typeMessage && text && userDetails?.name && roomId) {
-      typeMessage(
-        Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""),
-        userDetails.name
-      );
+      typeMessage(roomId as string, userDetails.name);
     }
   }, [text, userDetails?.name, typeMessage, roomId]);
 
