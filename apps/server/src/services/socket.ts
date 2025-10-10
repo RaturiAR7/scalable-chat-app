@@ -94,6 +94,13 @@ class SocketService {
       socket.on("typing-message", async (roomId: string, username: string) => {
         socket.to(roomId).emit("message-typing", username);
       });
+      ///Stop typing indicator
+      socket.on(
+        "stop-typing-message",
+        async (roomId: string, username: string) => {
+          socket.to(roomId).emit("stop-message-typing", username);
+        }
+      );
       ///Message in particular room only
       socket.on(
         "event:room-message",

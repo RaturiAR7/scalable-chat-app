@@ -15,6 +15,7 @@ export interface ISocketContext {
   connect: (type: string, roomId: string, userInfo: UserInfo) => void;
   leaveRoom: (roomId: string) => void;
   typeMessage: (roomId: string, username: string) => void;
+  stopTypeMessage: (roomId: string, username: string) => void;
   messages: message[];
   typers: string[];
 }

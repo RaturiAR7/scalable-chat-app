@@ -46,6 +46,14 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       socket.emit("typing-message", roomId, username);
     }
   };
+  const stopTypeMessage: ISocketContext["stopTypeMessage"] = (
+    roomId: string,
+    username: string
+  ) => {
+    if (socket && roomId && username) {
+      socket.emit("stop-typing-message", roomId, username);
+    }
+  };
 
   const leaveRoom: ISocketContext["leaveRoom"] = (roomId: string) => {
     if (socket) {
@@ -56,6 +64,10 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     setTypers((prevTypers) =>
       prevTypers.includes(username) ? prevTypers : [...prevTypers, username]
     );
+  }, []);
+  const onStopTypingRec = useCallback((username: string) => {
+    console.log("remove");
+    setTypers((prevTypers) => prevTypers.filter((user) => user !== username));
   }, []);
   const onMessageRec = useCallback(
     (msg: string, userInfo: string, date: Date) => {
@@ -102,6 +114,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       _socket.on("message-from-server", onMessageRec);
       _socket.on("previous-messages", onPreviousMessageRec);
       _socket.on("message-typing", onTypingRec);
+      _socket.on("stop-message-typing", onStopTypingRec);
       _socket.on("disconnect", onDisconnect);
 
       if (roomId) {
@@ -123,7 +136,15 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
   return (
     <SocketContext.Provider
-      value={{ sendMessage, connect, messages, leaveRoom, typeMessage, typers }}
+      value={{
+        sendMessage,
+        connect,
+        messages,
+        leaveRoom,
+        typeMessage,
+        stopTypeMessage,
+        typers,
+      }}
     >
       {children}
     </SocketContext.Provider>

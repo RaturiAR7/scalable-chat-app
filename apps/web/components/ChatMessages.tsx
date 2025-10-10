@@ -14,6 +14,7 @@ const ChatMessages = () => {
   const messages = socketContext?.messages;
   const typers = socketContext?.typers;
   const typeMessage = socketContext?.typeMessage;
+  const stopTypeMessage = socketContext?.stopTypeMessage;
   const sendMessage = socketContext?.sendMessage;
   const leaveRoom = socketContext?.leaveRoom;
   const connect = socketContext?.connect;
@@ -39,27 +40,34 @@ const ChatMessages = () => {
     connect("join-room", roomId as string, userInfo);
     return () => {
       if (leaveRoom && roomId) {
-        leaveRoom(Array.isArray(roomId) ? (roomId[0] ?? "") : (roomId ?? ""));
+        leaveRoom(roomId as string);
       }
     };
   }, [roomId, session]);
 
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined = undefined;
+
     if (typeMessage && text && userDetails?.name && roomId) {
       typeMessage(roomId as string, userDetails.name);
+      if (timer) clearTimeout(timer);
     }
-  }, [text, userDetails?.name, typeMessage, roomId]);
+    timer = setTimeout(() => {
+      if (stopTypeMessage && userDetails?.name && roomId) {
+        stopTypeMessage(roomId as string, userDetails.name);
+      }
+    }, 1000);
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [text, userDetails?.name, typeMessage, roomId, stopTypeMessage]);
 
   const sendMessageHandler = (e: React.FormEvent) => {
     e.preventDefault();
-    if (sendMessage) {
-      const normalizedRoomId = Array.isArray(roomId)
-        ? (roomId[0] ?? "")
-        : (roomId ?? "");
-      if (sendMessage && userDetails)
-        sendMessage(text, normalizedRoomId, userDetails);
-      setText("");
-    }
+    if (sendMessage && userDetails)
+      sendMessage(text, roomId as string, userDetails);
+    setText("");
   };
 
   return (
