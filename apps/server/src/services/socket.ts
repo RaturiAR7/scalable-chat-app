@@ -5,9 +5,10 @@ import prismaClient from "./prisma";
 // import { produceMessage } from "./kafka";
 
 require("dotenv").config();
+console.log(process.env.REDIS_URL);
 
 const pubClient = createClient({
-  url: process.env.REDIS_URL || "redis://localhost:6379",
+  url: "rediss://default:AV6iAAIncDIxNTMyMDMxNzMzZWQ0MjExYTc4MjViMTczNzBmOTNmM3AyMjQyMjY@fitting-sheep-24226.upstash.io:6379",
 });
 const subClient = pubClient.duplicate();
 
@@ -21,6 +22,7 @@ class SocketService {
         allowedHeaders: ["*"],
         origin: [`${process.env.FRONTEND_ORIGIN_URL}`, "http://localhost:3000"],
       },
+      
       pingInterval: 25000,
       pingTimeout: 60000,
     });
@@ -38,7 +40,7 @@ class SocketService {
     });
   }
 
-  public initListeners() {
+  public initListeners() { 
     const io = this._io;
     /////Connection with socket
     io.on("connect", (socket) => {
@@ -87,6 +89,7 @@ class SocketService {
               email: msg.sender.email,
               image: msg.sender.image,
             },
+            
           }))
         );
       });
@@ -125,6 +128,7 @@ class SocketService {
               text: message,
               roomId: roomId,
               senderId: userInfoParsed.id,
+            
             },
           });
         }
@@ -133,6 +137,8 @@ class SocketService {
       ////Leave room
       socket.on("leave-room", ({ roomId }: { roomId: string }) => {
         socket.leave(roomId);
+
+        
       });
     });
 
@@ -143,5 +149,6 @@ class SocketService {
     return this._io;
   }
 }
+
 
 export default SocketService;
