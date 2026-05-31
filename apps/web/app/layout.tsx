@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang='en'>
       <SessionProvider>
         <SocketProvider>
-          <body className='bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900'>
+          <body className='bg-slate-900 text-slate-100 font-sans'>
             <Navbar />
             {children}
           </body>

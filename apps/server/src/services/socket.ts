@@ -8,9 +8,12 @@ require("dotenv").config();
 console.log(process.env.REDIS_URL);
 
 const pubClient = createClient({
-  url: "rediss://default:AV6iAAIncDIxNTMyMDMxNzMzZWQ0MjExYTc4MjViMTczNzBmOTNmM3AyMjQyMjY@fitting-sheep-24226.upstash.io:6379",
+  url: process.env.REDIS_URL,
 });
+pubClient.on("error", (err) => console.error("Redis Pub Error:", err));
+
 const subClient = pubClient.duplicate();
+subClient.on("error", (err) => console.error("Redis Sub Error:", err));
 
 class SocketService {
   private _io: Server;
@@ -28,16 +31,20 @@ class SocketService {
     });
 
     // 💡 Connect clients and apply the adapter with a JSON parser
-    Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
-      this._io.adapter(
-        createAdapter(pubClient, subClient, {
-          parser: {
-            encode: JSON.stringify,
-            decode: JSON.parse,
-          },
-        })
-      );
-    });
+    Promise.all([pubClient.connect(), subClient.connect()])
+      .then(() => {
+        this._io.adapter(
+          createAdapter(pubClient, subClient, {
+            parser: {
+              encode: JSON.stringify,
+              decode: JSON.parse,
+            },
+          })
+        );
+      })
+      .catch((err) => {
+        console.error("Failed to connect to Redis adapter:", err);
+      });
   }
 
   public initListeners() { 

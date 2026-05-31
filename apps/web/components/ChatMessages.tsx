@@ -71,7 +71,7 @@ const ChatMessages = () => {
   };
 
   return (
-    <div className='h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col'>
+    <div className='h-screen bg-slate-900 flex flex-col'>
       {/* Messages Container */}
       <div className='flex-1 relative z-10 overflow-hidden'>
         <div className='h-full overflow-y-auto px-6 py-4 space-y-4'>
@@ -86,7 +86,7 @@ const ChatMessages = () => {
                   className={`flex items-end space-x-2 max-w-xs md:max-w-md lg:max-w-lg`}
                 >
                   {!isOwn && (
-                    <div className='w-8 h-8 bg-gradient-to-r bg-black from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-semibold text-white flex-shrink-0'>
+                    <div className='w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center text-xs font-semibold text-slate-200 flex-shrink-0'>
                       <Image
                         src={userInfo.image || avatar}
                         height={100}
@@ -107,11 +107,11 @@ const ChatMessages = () => {
                     )}
 
                     <div
-                      className={`relative px-4 py-3 rounded-2xl transition-all duration-200 ${
+                      className={`relative px-4 py-3 rounded-2xl transition-colors duration-200 ${
                         isOwn
-                          ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-br-md"
-                          : "bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-bl-md"
-                      } group-hover:shadow-lg group-hover:scale-105`}
+                          ? "bg-indigo-600 text-white rounded-br-sm"
+                          : "bg-slate-800 text-slate-100 rounded-bl-sm"
+                      }`}
                     >
                       <p className='text-sm leading-relaxed'>{msg}</p>
 
@@ -129,7 +129,7 @@ const ChatMessages = () => {
                   </div>
 
                   {isOwn && (
-                    <div className='w-8 h-8 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center text-xs font-semibold text-white flex-shrink-0'>
+                    <div className='w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-xs font-semibold text-white flex-shrink-0'>
                       <Image
                         src={userInfo.image || avatar}
                         height={100}
@@ -147,7 +147,7 @@ const ChatMessages = () => {
       </div>
 
       {/* Message Input */}
-      <div className='relative z-10 bg-white/10 backdrop-blur-lg border-t border-white/20 p-6'>
+      <div className='relative z-10 bg-slate-900 border-t border-slate-800 p-6'>
         {typers && typers.length > 0 && (
           <div className='mb-2 text-sm text-gray-300 italic'>
             {typers.join(", ")} {typers.length === 1 ? "is" : "are"} typing...
@@ -158,7 +158,7 @@ const ChatMessages = () => {
           onSubmit={sendMessageHandler}
         >
           <div className='flex-1 relative'>
-            <div className='bg-white/10 border border-white/30 rounded-2xl overflow-hidden'>
+            <div className='bg-slate-800 border border-slate-700 rounded-xl overflow-hidden'>
               <input
                 type='text'
                 name='message'
@@ -179,7 +179,7 @@ const ChatMessages = () => {
           <div className='flex items-center space-x-2'>
             <button
               type='submit'
-              className='p-3 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-full transition-all duration-200 transform hover:scale-105 disabled:hover:scale-100 flex-shrink-0'
+              className='p-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-colors duration-200 flex-shrink-0'
             >
               <Send className='w-5 h-5 text-white' />
             </button>

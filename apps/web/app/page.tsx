@@ -11,59 +11,31 @@ export default function ChatGlobalLanding() {
         >
           {/* Hero Title */}
           <div className='mb-8'>
-            <h2 className='text-4xl sm:text-5xl md:text-7xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent mb-6 leading-tight'>
+            <h2 className='text-4xl sm:text-5xl md:text-7xl font-bold text-slate-100 mb-6 leading-tight tracking-tight'>
               Connect with the
-              <span className='block bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent'>
+              <span className='block text-indigo-400'>
                 World Instantly
               </span>
             </h2>
-            <p className='text-base sm:text-lg md:text-2xl text-gray-300 mb-4 leading-relaxed'>
-              Join global chat rooms or private spaces — real-time, fast, and
-              secure.
+            <p className='text-base sm:text-lg md:text-xl text-slate-300 mb-4 font-light max-w-2xl mx-auto'>
+              Join global chat rooms or private spaces — real-time and fast.
             </p>
-            <p className='text-sm sm:text-base md:text-lg text-gray-400'>
+            <p className='text-sm sm:text-base md:text-lg text-slate-400'>
               Experience the future of communication.
             </p>
           </div>
           {/* Feature Pills */}
           <div className='flex flex-wrap justify-center gap-4 mb-12'>
-            <div className='flex items-center space-x-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2'>
-              <Zap className='w-4 h-4 text-yellow-400' />
-              <span className='text-white text-sm'>Lightning Fast</span>
+            <div className='flex items-center space-x-2 bg-slate-800 border border-slate-700 rounded-full px-4 py-2'>
+              <Zap className='w-4 h-4 text-indigo-400' />
+              <span className='text-slate-100 text-sm'>Lightning Fast</span>
             </div>
-            <div className='flex items-center space-x-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2'>
-              <Lock className='w-4 h-4 text-green-400' />
-              <span className='text-white text-sm'>End-to-End Encrypted</span>
-            </div>
-            <div className='flex items-center space-x-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2'>
-              <Globe className='w-4 h-4 text-blue-400' />
-              <span className='text-white text-sm'>Global Reach</span>
+            <div className='flex items-center space-x-2 bg-slate-800 border border-slate-700 rounded-full px-4 py-2'>
+              <Globe className='w-4 h-4 text-indigo-400' />
+              <span className='text-slate-100 text-sm'>Global Reach</span>
             </div>
           </div>
           <ConnectToRoom />
-          {/* Stats */}
-          <div className='flex justify-center items-center space-x-8 text-center'>
-            <div className='group'>
-              <div className='text-xl sm:text-2xl md:text-3xl font-bold text-emerald-400 group-hover:scale-110 transition-transform duration-300'>
-                1M+
-              </div>
-              <div className='text-gray-400 text-sm'>Active Users</div>
-            </div>
-            <div className='w-px h-12 bg-gray-600'></div>
-            <div className='group'>
-              <div className='text-xl sm:text-2xl md:text-3xl font-bold text-cyan-400 group-hover:scale-110 transition-transform duration-300'>
-                50K+
-              </div>
-              <div className='text-gray-400 text-sm'>Chat Rooms</div>
-            </div>
-            <div className='w-px h-12 bg-gray-600'></div>
-            <div className='group'>
-              <div className='text-xl sm:text-2xl md:text-3xl font-bold text-purple-400 group-hover:scale-110 transition-transform duration-300'>
-                99.9%
-              </div>
-              <div className='text-gray-400 text-sm'>Uptime</div>
-            </div>
-          </div>
         </div>
       </main>
       {/* Footer */}
